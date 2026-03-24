@@ -16,14 +16,6 @@ public class MenuBoxItem {
         this.rect = new Rectangle(x, y, width, height);
     }
 
-    public Rectangle getRect() {
-        return rect;
-    }
-
-    public void setRect(Rectangle rect) {
-        this.rect = rect;
-    }
-
     public String getText() {
         return text;
     }

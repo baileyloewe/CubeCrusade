@@ -1,8 +1,8 @@
 package com.main;
 
+import com.main.menus.MenuManager;
+
 public class Mediator {
-
-
 
     private Game game;
     private Handler handler;
@@ -12,17 +12,12 @@ public class Mediator {
     private HUD hud;
     private Spawn spawn;
     private KeyInput keyInput;
-    private StateHandler stateHandler;
+    private MenuManager menuManager;
     private AudioStream gameAudio;
     private AudioStream menuAudio;
-
-
     private SpriteLoader spriteLoader;
 
-
-    public Mediator() {
-
-    }
+    public Mediator() {}
 
     public Game getGame() {
         return game;
@@ -88,12 +83,12 @@ public class Mediator {
         this.keyInput = keyInput;
     }
 
-    public StateHandler getStateHandler() {
-        return stateHandler;
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
 
-    public void setStateHandler(StateHandler stateHandler) {
-        this.stateHandler = stateHandler;
+    public void setMenuManager(MenuManager menuManager) {
+        this.menuManager = menuManager;
     }
 
     public AudioStream getGameAudio() {
