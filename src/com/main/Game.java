@@ -1,5 +1,7 @@
 package com.main;
 
+import com.main.menus.MenuManager;
+
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -25,6 +27,7 @@ public class Game extends Canvas implements Runnable {
 
 
 
+
     public Game() {
         Random r = new Random();
         mediator = new Mediator();
@@ -35,21 +38,14 @@ public class Game extends Canvas implements Runnable {
         mediator.setSpawn(new Spawn(mediator));
         mediator.setStar(new Star(mediator));
         mediator.setKeyInput(new KeyInput(mediator));
-        mediator.setStateHandler(new StateHandler(mediator));
-        // Thanks to  "Half Mystery" Kevin MacLeod (incompetech.com)"
-        //            "Licensed under Creative Commons: By Attribution 4.0 License"
-        //            "http://creativecommons.org/licenses/by/4.0/"
+        mediator.setMenuManager(new MenuManager(mediator));
+        mediator.getMenuManager().init();
         mediator.setGameAudio(new AudioStream("/resources/Half-Mystery.wav", this));
-        // Thanks to  "Voxel Revolution" Kevin MacLeod (incompetech.com)"
-        //            "Licensed under Creative Commons: By Attribution 4.0 License"
-        //            "http://creativecommons.org/licenses/by/4.0/"
         mediator.setMenuAudio(new AudioStream("/resources/Voxel Revolution.wav", this));
         mediator.setSpriteLoader(new SpriteLoader(mediator));
-
-
         new Window(WIDTH, HEIGHT, "Cube Crusade", this);
         this.addKeyListener(mediator.getKeyInput());
-        this.addMouseListener(mediator.getStateHandler());
+        this.addMouseListener(mediator.getMenuManager());
 
         new MenuParticle(r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16), ID.MenuParticle, mediator.getHandler());
 
@@ -148,11 +144,9 @@ public class Game extends Canvas implements Runnable {
                 }
             }
             case Menu, Settings, End -> {
-                mediator.getStateHandler().tick();
                 mediator.getHandler().tickMenu();
             }
             case Paused, Shop -> {
-                mediator.getStateHandler().tick();
                 mediator.getKeyInput().resetStates();
             }
             default -> {
@@ -181,13 +175,13 @@ public class Game extends Canvas implements Runnable {
             case Menu, End, Settings, Shop -> {
                 mediator.getStar().render(g);
                 mediator.getHandler().render(g);
-                mediator.getStateHandler().render(g);
+                mediator.getMenuManager().render(g);
             }
             case Paused -> {
                 mediator.getStar().render(g);
                 mediator.getHud().render(g);
                 mediator.getHandler().render(g);
-                mediator.getStateHandler().render(g);
+                mediator.getMenuManager().render(g);
             }
             default -> {
             }
