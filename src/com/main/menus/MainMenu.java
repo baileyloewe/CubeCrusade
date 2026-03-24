@@ -33,7 +33,7 @@ public class MainMenu extends Menu {
         }
         if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
-            changeAudio();
+            togglePauseMusic();
             mm.gameLive = true;
             handler.clearAll();
             upgrade.initializeValues();

@@ -18,7 +18,7 @@ public class GameOverMenu extends Menu {
             handler.clearAll();
             mm.gameLive = false;
             mediator.getGame().gameState = Game.STATE.Menu;
-            changeAudio();
+            togglePauseMusic();
             new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
         }
     }
