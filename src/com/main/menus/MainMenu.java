@@ -3,9 +3,7 @@ package com.main.menus;
 import com.main.*;
 import com.main.enemies.EnemyHard;
 import com.main.enemies.EnemySlow;
-
 import java.awt.*;
-
 import static com.main.GraphicsUtil.*;
 
 public class MainMenu extends Menu {
@@ -29,15 +27,12 @@ public class MainMenu extends Menu {
     }
 
     public void interact(int mouseX, int mouseY) {
-
-        // Quick particle count check, just to prevent too many from spawning
         if (menuParticleCount < 25) {
             new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
             menuParticleCount++;
         }
-        if (mouseOverItem(menuStartBox, mouseX, mouseY)) // If we press the play button, start the game
+        if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
-            // Stop the menu audio and start the game audio
             changeAudio();
             mm.gameLive = true;
             handler.clearAll();
@@ -48,10 +43,10 @@ public class MainMenu extends Menu {
             mediator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, handler, mediator));
             if (!mediator.getGame().difficulty) new EnemySlow(1, 1, ID.SlowEnemy, handler);
             else new EnemyHard(1, 1, ID.HardEnemy, handler);
-        } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY)) // If we press the settings button, switch to settings
+        } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY))
         {
             mediator.getGame().gameState = Game.STATE.Settings;
-        } else if (mouseOverItem(menuExitBox, mouseX, mouseY)) // If we press the exit button, exit the game
+        } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
         {
             mediator.getGame().exitGame();
         }

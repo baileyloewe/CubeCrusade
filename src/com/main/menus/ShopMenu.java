@@ -1,15 +1,15 @@
 package com.main.menus;
 
 import com.main.*;
-
 import java.awt.*;
+import static com.main.GraphicsUtil.*;
+import static com.main.GraphicsUtil.drawRectAndString;
 
 public class ShopMenu extends Menu {
     private final MenuBoxItem shopShopBox, shopUpgradeHealthBox, shopUpgradeSpeedBox, shopRefillHealthBox, shopCurrencyBox, shopBackBox;
 
     public ShopMenu(MenuManager menuManager) {
         super(menuManager);
-
         shopShopBox = new MenuBoxItem(centeredX - 75, centeredY - 200, 150, 70, "SHOP");
         shopUpgradeHealthBox = new MenuBoxItem(centeredX - 140, centeredY - 82, 280, 44, "UPGRADE HEALTH (" + upgrade.getCostOfNextHealthUpgrade() + ")");
         shopUpgradeSpeedBox = new MenuBoxItem(centeredX - 130, centeredY + 13, 260, 44, "UPGRADE SPEED (" + upgrade.getCostOfNextSpeedUpgrade() + ")");
@@ -50,12 +50,12 @@ public class ShopMenu extends Menu {
     }
 
     public void render(Graphics g) {
-        GraphicsUtil.drawRectAndString(g, shopShopBox, GraphicsUtil.Fonts.LARGE);
-        GraphicsUtil.drawRectAndString(g, shopUpgradeHealthBox, GraphicsUtil.Fonts.MEDIUM);
-        GraphicsUtil.drawRectAndString(g, shopUpgradeSpeedBox, GraphicsUtil.Fonts.MEDIUM);
-        GraphicsUtil.drawRectAndString(g, shopRefillHealthBox, GraphicsUtil.Fonts.MEDIUM);
-        GraphicsUtil.drawRectAndString(g, shopCurrencyBox, GraphicsUtil.Fonts.MEDIUM);
-        GraphicsUtil.drawRectAndString(g, shopBackBox, GraphicsUtil.Fonts.MEDIUM);
+        drawRectAndString(g, shopShopBox, Fonts.LARGE);
+        drawRectAndString(g, shopUpgradeHealthBox, Fonts.MEDIUM);
+        drawRectAndString(g, shopUpgradeSpeedBox, Fonts.MEDIUM);
+        drawRectAndString(g, shopRefillHealthBox, Fonts.MEDIUM);
+        drawRectAndString(g, shopCurrencyBox, Fonts.MEDIUM);
+        drawRectAndString(g, shopBackBox, Fonts.MEDIUM);
         updateShopBoxSizesAndText();
     }
 }
