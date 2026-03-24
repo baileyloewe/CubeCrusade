@@ -25,13 +25,18 @@ public abstract class Menu {
         return (mouseX >= menuBoxItem.rect.x && mouseX <= menuBoxItem.rect.x + menuBoxItem.rect.width) && (mouseY >= menuBoxItem.rect.y && mouseY <= menuBoxItem.rect.y + menuBoxItem.rect.height);
     }
 
-    public void changeAudio() {
-        mediator.getGameAudio().reverseAudioStream();
-        mediator.getMenuAudio().reverseAudioStream();
+    public void toggleMuteMusic() {
+        mediator.getGameAudio().toggleMute();
+        mediator.getMenuAudio().toggleMute();
+    }
+
+    public void togglePauseMusic() {
+        mediator.getGameAudio().toggleMusicPause();
+        mediator.getMenuAudio().toggleMusicPause();
     }
 
     public void adjustAudio(int delta) {
-        mediator.getGameAudio().changeVolumeOfAudioStream(delta);
-        mediator.getMenuAudio().changeVolumeOfAudioStream(delta);
+        mediator.getGameAudio().adjustAudioVolume(delta);
+        mediator.getMenuAudio().adjustAudioVolume(delta);
     }
 }
