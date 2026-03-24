@@ -5,7 +5,6 @@ import com.main.Mediator;
 import com.main.Upgrade;
 import com.main.MenuBoxItem;
 
-
 public abstract class Menu {
     protected MenuManager mm;
     protected Mediator mediator;
@@ -29,5 +28,10 @@ public abstract class Menu {
     public void changeAudio() {
         mediator.getGameAudio().reverseAudioStream();
         mediator.getMenuAudio().reverseAudioStream();
+    }
+
+    public void adjustAudio(int delta) {
+        mediator.getGameAudio().changeVolumeOfAudioStream(delta);
+        mediator.getMenuAudio().changeVolumeOfAudioStream(delta);
     }
 }

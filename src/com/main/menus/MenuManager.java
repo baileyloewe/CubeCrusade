@@ -1,7 +1,6 @@
 package com.main.menus;
 
 import com.main.*;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -59,7 +58,4 @@ public class MenuManager extends MouseAdapter {
             case End -> gameOverMenu.render(g);
         }
     }
-
-
-
 }
