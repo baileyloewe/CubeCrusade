@@ -42,7 +42,7 @@ public class AudioStream {
                 e.printStackTrace();
             }
             audioStream.loop(Clip.LOOP_CONTINUOUSLY);
-            this.changeVolumeOfAudioStream(-19);
+            this.adjustAudioVolume(-19);
             this.pauseAudioStream();
     }
 
@@ -50,7 +50,7 @@ public class AudioStream {
         return this.muted;
     }
 
-    public void reverseMuteState() {
+    public void toggleMute() {
         synchronized (game) {
             this.muted = !this.muted;
             if (this.muted) {
@@ -60,14 +60,11 @@ public class AudioStream {
                     this.playAudioStream();
                 }
             }
-
-
         }
     }
 
-    public void reverseAudioStream() {
+    public void toggleMusicPause() {
         synchronized (game) {
-
             if (this.muted) {
                 if (this.musicState == MUSICSTATE.Playing) this.musicState = MUSICSTATE.Paused;
                 else this.musicState = MUSICSTATE.Playing;
@@ -77,7 +74,7 @@ public class AudioStream {
         }
     }
 
-    public void changeVolumeOfAudioStream(float volume) {
+    public void adjustAudioVolume(float volume) {
         synchronized (game) {
             FloatControl gainControl = (FloatControl) audioStream.getControl(FloatControl.Type.MASTER_GAIN);
             volumeLevel += volume;
@@ -117,7 +114,6 @@ public class AudioStream {
             this.currentFrame = this.audioStream.getMicrosecondPosition();
             audioStream.stop();
             musicState = MUSICSTATE.Paused;
-
         }
     }
 
@@ -128,7 +124,6 @@ public class AudioStream {
             resetAudioStream();
             audioStream.setMicrosecondPosition(currentFrame);
             this.playAudioStream();
-
         }
     }
 

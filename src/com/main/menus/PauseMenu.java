@@ -35,7 +35,7 @@ public class PauseMenu extends Menu {
             mm.gameLive = false;
             handler.clearAll();
             mediator.getGame().gameState = Game.STATE.Menu;
-            changeAudio();
+            togglePauseMusic();
             new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
         }
     }

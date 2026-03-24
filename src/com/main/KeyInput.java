@@ -16,8 +16,8 @@ public class KeyInput extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_M) {
-            mediator.getMenuAudio().reverseMuteState();
-            mediator.getGameAudio().reverseMuteState();
+            mediator.getMenuAudio().toggleMute();
+            mediator.getGameAudio().toggleMute();
         }
         switch (mediator.getGame().gameState) {
             case Game:

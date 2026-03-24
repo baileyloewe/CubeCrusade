@@ -32,7 +32,7 @@ public class SettingsMenu extends Menu {
         } else if (mouseOverItem(volumeDownBox, mouseX, mouseY)) {
             adjustAudio(-5);
         } else if (mouseOverItem(muteBox, mouseX, mouseY)) {
-            changeAudio();
+            toggleMuteMusic();
         } else if (!mm.gameLive) {
             mediator.getGame().difficulty = !mouseOverItem(difficultyEasyBox, mouseX, mouseY);
         }
@@ -41,9 +41,9 @@ public class SettingsMenu extends Menu {
     public void render(Graphics g) {
         drawRectAndString(g, settingsTitle, Fonts.LARGE);
         drawRectAndString(g, volumeTitle, Fonts.MEDIUM);
-
-        if (mediator.getMenuAudio().isMuted())
+        if (mediator.getMenuAudio().isMuted()) {
             drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, new Color(109, 10, 6));
+        }
         else drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, Color.black);
 
         drawVolumeUpAndDown(g, volumeDownBox, volumeUpBox);
