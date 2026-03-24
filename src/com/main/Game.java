@@ -179,8 +179,8 @@ public class Game extends Canvas implements Runnable {
             }
             case Paused -> {
                 mediator.getStar().render(g);
-                mediator.getHud().render(g);
                 mediator.getHandler().render(g);
+                mediator.getHud().render(g);
                 mediator.getMenuManager().render(g);
             }
             default -> {
