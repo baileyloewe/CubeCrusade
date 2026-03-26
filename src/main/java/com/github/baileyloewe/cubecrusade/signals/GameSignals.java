@@ -13,6 +13,9 @@ public class GameSignals {
     public static EventSignal GameExited = new EventSignal();
     public static EventSignal GameResumed = new EventSignal();
 
+    // Player
+    public static EventSignal PlayerDied = new EventSignal();
+
     // Menu
     public static EventSignal OpenPauseMenu = new EventSignal();
     public static EventSignal OpenSettings = new EventSignal();

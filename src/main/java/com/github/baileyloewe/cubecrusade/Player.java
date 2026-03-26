@@ -39,6 +39,10 @@ public class Player extends GameObject {
         y = Game.clamp(y, 0, Game.HEIGHT - 64);
 
         collision();
+
+        if (health <= 0) {
+            GameSignals.PlayerDied.emit();
+        }
     }
 
     private void collision() {

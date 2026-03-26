@@ -58,6 +58,10 @@ public class Game extends Canvas implements Runnable {
         GameSignals.GameResumed.connect(() -> this.gameState = GAMESTATE.Game);
         GameSignals.OpenSettings.connect(() -> this.gameState = GAMESTATE.Settings);
         GameSignals.OpenShop.connect(() -> this.gameState = GAMESTATE.Shop);
+        GameSignals.PlayerDied.connect(() -> {
+            serviceLocator.getKeyInput().resetStates();
+            gameState = GAMESTATE.End;
+        });
     }
 
     public void onGameStarted() {
@@ -151,10 +155,6 @@ public class Game extends Canvas implements Runnable {
                 serviceLocator.getHud().tick();
                 serviceLocator.getSpawn().tick();
                 serviceLocator.getGameHandler().tick();
-                if (serviceLocator.getPlayer().getHealth() <= 0) {
-                    serviceLocator.getKeyInput().resetStates();
-                    gameState = GAMESTATE.End;
-                }
             }
             case Menu, Settings, End -> serviceLocator.getGameHandler().tickMenu();
             case Paused, Shop -> serviceLocator.getKeyInput().resetStates();
