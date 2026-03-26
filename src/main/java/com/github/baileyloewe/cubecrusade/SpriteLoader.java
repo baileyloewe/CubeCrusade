@@ -9,9 +9,9 @@ public class SpriteLoader
 {
     private final Game game;
 
-    public SpriteLoader(Mediator mediator)
+    public SpriteLoader(ServiceLocator serviceLocator)
     {
-        this.game = mediator.getGame();
+        this.game = serviceLocator.getGame();
     }
 
     public BufferedImage loadImage(String path)

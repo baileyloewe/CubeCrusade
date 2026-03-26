@@ -31,9 +31,9 @@ public abstract class GameObject
 
     }
 
-    public GameObject(Mediator mediator)
+    public GameObject(ServiceLocator serviceLocator)
     {
-        handler = mediator.getGameHandler();
+        handler = serviceLocator.getGameHandler();
         handler.addObject(this);
     }
 
