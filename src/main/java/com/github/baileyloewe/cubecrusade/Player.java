@@ -15,9 +15,9 @@ public class Player extends GameObject {
     private int health = 100;
     private int maxHealth = 100;
 
-    public Player(float x, float y, ID id, Mediator mediator) {
-        super(x, y, id, mediator.getGameHandler());
-        this.handler = mediator.getGameHandler();
+    public Player(float x, float y, ID id, ServiceLocator serviceLocator) {
+        super(x, y, id, serviceLocator.getGameHandler());
+        this.handler = serviceLocator.getGameHandler();
         width = 64;
         height = 64;
         Sprite sprite = new Sprite(Game.spriteSheet);

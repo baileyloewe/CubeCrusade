@@ -26,8 +26,8 @@ public class SettingsMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(backBox, mouseX, mouseY)) {
-            if (mediator.getGame().gameActive) mediator.getGame().gameState = Game.GAMESTATE.Paused;
-            else mediator.getGame().gameState = Game.GAMESTATE.Menu;
+            if (serviceLocator.getGame().gameActive) serviceLocator.getGame().gameState = Game.GAMESTATE.Paused;
+            else serviceLocator.getGame().gameState = Game.GAMESTATE.Menu;
         }
         else if (mouseOverItem(volumeUpBox, mouseX, mouseY)) {
             GameSignals.AudioAdjusted.emit(5);
@@ -35,11 +35,11 @@ public class SettingsMenu extends Menu {
             GameSignals.AudioAdjusted.emit(-5);
         } else if (mouseOverItem(muteBox, mouseX, mouseY)) {
             GameSignals.MuteToggled.emit();
-        } else if (!mediator.getGame().gameActive) {
+        } else if (!serviceLocator.getGame().gameActive) {
             if (mouseOverItem(difficultyEasyBox, mouseX, mouseY)) {
-                mediator.getGame().difficulty = Game.DIFFICULTY.Easy;
+                serviceLocator.getGame().difficulty = Game.DIFFICULTY.Easy;
             } else if (mouseOverItem(difficultyHardBox, mouseX, mouseY)) {
-                mediator.getGame().difficulty = Game.DIFFICULTY.Hard;
+                serviceLocator.getGame().difficulty = Game.DIFFICULTY.Hard;
             }
         }
     }
@@ -47,19 +47,19 @@ public class SettingsMenu extends Menu {
     public void render(Graphics g) {
         drawRectAndString(g, settingsTitle, Fonts.LARGE);
         drawRectAndString(g, volumeTitle, Fonts.MEDIUM);
-        if (mediator.getAudioStream().isPlaying()) {
+        if (serviceLocator.getAudioStream().isPlaying()) {
             drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, Color.black);
         }
         else drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, new Color(109, 10, 6));
 
         drawVolumeUpAndDown(g, volumeDownBox, volumeUpBox);
 
-        volumeSliderBox.rect.x = (volumeSliderLineBox.rect.x - 1) + (((int) mediator.getAudioStream().getCurrentVolume() + 80) * (volumeSliderLineBox.rect.width - 22) / 85);
+        volumeSliderBox.rect.x = (volumeSliderLineBox.rect.x - 1) + (((int) serviceLocator.getAudioStream().getCurrentVolume() + 80) * (volumeSliderLineBox.rect.width - 22) / 85);
         g.fillRect(volumeSliderBox.rect.x, volumeSliderBox.rect.y, 22, 22);
 
         g.fillRect(centeredX - 75, volumeDownBox.rect.y + 15, 150, 2);
 
-        if (mediator.getGame().difficulty == Game.DIFFICULTY.Easy) {
+        if (serviceLocator.getGame().difficulty == Game.DIFFICULTY.Easy) {
             drawRectAndStringWithColor(g, difficultyEasyBox, Fonts.MEDIUM, new Color(1, 72, 12));
             drawRectAndStringWithColor(g, difficultyHardBox, Fonts.MEDIUM, Color.black);
         } else {

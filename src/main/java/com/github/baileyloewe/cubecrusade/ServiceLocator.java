@@ -2,7 +2,7 @@ package com.github.baileyloewe.cubecrusade;
 
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 
-public class Mediator {
+public class ServiceLocator {
 
     private Game game;
     private GameHandler gameHandler;
@@ -16,7 +16,7 @@ public class Mediator {
     private AudioStream audioStream;
     private SpriteLoader spriteLoader;
 
-    public Mediator() {}
+    public ServiceLocator() {}
 
     public Game getGame() {
         return game;

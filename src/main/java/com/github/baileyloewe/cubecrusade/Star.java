@@ -9,8 +9,8 @@ public class Star extends GameObject{
     /**
      * Creates a game object with an x-coordinate, x-coordinate, ID, and attaches it to the ID
      */
-    public Star(Mediator mediator) {
-        super(mediator);
+    public Star(ServiceLocator serviceLocator) {
+        super(serviceLocator);
         setLocations();
     }
 
