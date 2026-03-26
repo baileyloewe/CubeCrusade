@@ -96,7 +96,7 @@ public class Game extends Canvas implements Runnable {
      */
     public void exitGame() {
         serviceLocator.getAudioStream().closeAudioStream();
-        System.exit(1);
+        System.exit(0);
     }
 
     public void sleepThread(int time) {
