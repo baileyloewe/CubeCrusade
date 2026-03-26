@@ -1,5 +1,7 @@
 package com.main;
 
+import com.main.signals.GameSignals;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -16,12 +18,11 @@ public class KeyInput extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_M) {
-            mediator.getMenuAudio().toggleMute();
-            mediator.getGameAudio().toggleMute();
+            GameSignals.MuteToggled.emit();
         }
         switch (mediator.getGame().gameState) {
             case Game:
-                switch (keyCode) // Begin nested switch in the case game
+                switch (keyCode)
                 {
                     case KeyEvent.VK_W -> {
                         wPressed = true;
@@ -39,19 +40,16 @@ public class KeyInput extends KeyAdapter {
                         dPressed = true;
                         mostRecentXAxis = true;
                     }
-                    case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> mediator.getGame().gameState = Game.STATE.Paused;
-                    case KeyEvent.VK_SPACE -> mediator.getGame().gameState = Game.STATE.Shop;
-
-                    //Temporary testing tool
-                    case KeyEvent.VK_R -> mediator.getUpgrade().setCurrentHealth(mediator.getUpgrade().getCurrentMaxHealth());
-                } // End nested switch in the case game
+                    case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> mediator.getGame().gameState = Game.GAMESTATE.Paused;
+                    case KeyEvent.VK_SPACE -> GameSignals.OpenShop.emit();
+                }
                 updateVelocity();
                 break;
             case Shop:
-                if (keyCode == KeyEvent.VK_SPACE) mediator.getGame().gameState = Game.STATE.Game;
+                if (keyCode == KeyEvent.VK_SPACE) mediator.getGame().gameState = Game.GAMESTATE.Game;
                 break;
             case Paused:
-                if (keyCode == KeyEvent.VK_P || keyCode == KeyEvent.VK_ESCAPE) mediator.getGame().gameState = Game.STATE.Game;
+                if (keyCode == KeyEvent.VK_P || keyCode == KeyEvent.VK_ESCAPE) mediator.getGame().gameState = Game.GAMESTATE.Game;
                 break;
             default:
                 break;
@@ -60,7 +58,7 @@ public class KeyInput extends KeyAdapter {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (mediator.getGame().gameState == Game.STATE.Game) {
+        if (mediator.getGame().gameState == Game.GAMESTATE.Game) {
             int keyCode = e.getKeyCode();
             if (keyCode == KeyEvent.VK_W) {
                 wPressed = false;
@@ -75,21 +73,13 @@ public class KeyInput extends KeyAdapter {
         }
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // This method is not used
-    }
-
     public void updateVelocity() {
         float velocityX = 0;
         float velocityY = 0;
 
         if (wPressed) velocityY = mediator.getUpgrade().getCurrentSpeed() * -1;
-
         if (sPressed) velocityY = mediator.getUpgrade().getCurrentSpeed();
-
         if (aPressed) velocityX = mediator.getUpgrade().getCurrentSpeed() * -1;
-
         if (dPressed) velocityX = mediator.getUpgrade().getCurrentSpeed();
 
         if (wPressed && sPressed) {
@@ -101,8 +91,6 @@ public class KeyInput extends KeyAdapter {
         mediator.getPlayer().setVelocityX(mediator.getPlayer().normalizeSpeed(velocityX, velocityY, mediator.getUpgrade().getCurrentSpeed())[0]);
         mediator.getPlayer().setVelocityY(mediator.getPlayer().normalizeSpeed(velocityX, velocityY, mediator.getUpgrade().getCurrentSpeed())[1]);
     }
-
-
 
     public void resetStates() {
         wPressed = aPressed = sPressed = dPressed = mostRecentXAxis = mostRecentYaxis = false;

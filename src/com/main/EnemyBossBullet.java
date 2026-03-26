@@ -16,7 +16,7 @@ public class EnemyBossBullet extends Enemy {
      * @param id      sets ID
      * @param handler sets/attaches to handler
      */
-    public EnemyBossBullet(float x, float y, ID id, Handler handler) {
+    public EnemyBossBullet(float x, float y, ID id, GameHandler handler) {
         super(x, y, id, handler);
         Random r = new Random();
         setWidth(32);

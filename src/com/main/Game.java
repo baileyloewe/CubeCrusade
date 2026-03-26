@@ -1,6 +1,9 @@
 package com.main;
 
+import com.main.enemies.EnemyHard;
+import com.main.enemies.EnemySlow;
 import com.main.menus.MenuManager;
+import com.main.signals.GameSignals;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -22,35 +25,49 @@ public class Game extends Canvas implements Runnable {
     public static final int WIDTH = 1224, HEIGHT = WIDTH / 12 * 9;
     public static BufferedImage spriteSheet;
 
-    public STATE gameState = STATE.Menu;
-    public boolean difficulty = false;
-
-
-
+    public GAMESTATE gameState = GAMESTATE.Menu;
+    public boolean gameActive = false;
+    public DIFFICULTY difficulty = DIFFICULTY.Easy;
 
     public Game() {
         Random r = new Random();
         mediator = new Mediator();
         mediator.setGame(this);
-        mediator.setHandler(new Handler());
+        mediator.setGameHandler(new GameHandler());
         mediator.setUpgrade(new Upgrade());
         mediator.setHud(new HUD(mediator));
         mediator.setSpawn(new Spawn(mediator));
         mediator.setStar(new Star(mediator));
         mediator.setKeyInput(new KeyInput(mediator));
+        mediator.setAudioStream(new AudioStream(this));
         mediator.setMenuManager(new MenuManager(mediator));
-        mediator.getMenuManager().init();
-        mediator.setGameAudio(new AudioStream("/resources/Half-Mystery.wav", this));
-        mediator.setMenuAudio(new AudioStream("/resources/Voxel Revolution.wav", this));
         mediator.setSpriteLoader(new SpriteLoader(mediator));
         new Window(WIDTH, HEIGHT, "Cube Crusade", this);
         this.addKeyListener(mediator.getKeyInput());
         this.addMouseListener(mediator.getMenuManager());
 
-        new MenuParticle(r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16), ID.MenuParticle, mediator.getHandler());
+        new MenuParticle(r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16), ID.MenuParticle, mediator.getGameHandler());
 
-        mediator.getMenuAudio().playAudioStream();
+        mediator.getAudioStream().startAudioStream();
         spriteSheet = mediator.getSpriteLoader().loadImage("/resources/Sprites.png");
+
+        GameSignals.GameQuit.connect(() -> {this.gameState = GAMESTATE.Menu; this.gameActive = false;});
+        GameSignals.GameExited.connect(this::exitGame);
+        GameSignals.GameStarted.connect(this::onGameStarted);
+        GameSignals.OpenPauseMenu.connect(() -> this.gameState = GAMESTATE.Paused);
+        GameSignals.GameResumed.connect(() -> this.gameState = GAMESTATE.Game);
+        GameSignals.OpenSettings.connect(() -> this.gameState = GAMESTATE.Settings);
+        GameSignals.OpenShop.connect(() -> this.gameState = GAMESTATE.Shop);
+    }
+
+    public void onGameStarted() {
+        mediator.getGameHandler().clearAll();
+        sleepThread(500);
+        mediator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, mediator));
+        if (difficulty == DIFFICULTY.Easy) new EnemySlow(1, 1, ID.SlowEnemy, mediator.getGameHandler());
+        else new EnemyHard(1, 1, ID.HardEnemy, mediator.getGameHandler());
+        gameState = GAMESTATE.Game;
+        gameActive = true;
     }
 
     /**
@@ -74,8 +91,7 @@ public class Game extends Canvas implements Runnable {
      * Used to close audio streams before exiting the game
      */
     public void exitGame() {
-        mediator.getGameAudio().stopAudioStream();
-        mediator.getMenuAudio().stopAudioStream();
+        mediator.getAudioStream().closeAudioStream();
         System.exit(1);
     }
 
@@ -109,7 +125,6 @@ public class Game extends Canvas implements Runnable {
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
-        //int frames = 0;
         while (running) {
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
@@ -122,11 +137,9 @@ public class Game extends Canvas implements Runnable {
             if (running) {
                 render();
             }
-            //frames++;
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                //frames = 0;
             }
         }
         stop();
@@ -137,20 +150,14 @@ public class Game extends Canvas implements Runnable {
             case Game -> {
                 mediator.getHud().tick();
                 mediator.getSpawn().tick();
-                mediator.getHandler().tick();
-                if (mediator.getUpgrade().getCurrentHealth() <= 0) {
+                mediator.getGameHandler().tick();
+                if (mediator.getPlayer().getHealth() <= 0) {
                     mediator.getKeyInput().resetStates();
-                    gameState = STATE.End;
+                    gameState = GAMESTATE.End;
                 }
             }
-            case Menu, Settings, End -> {
-                mediator.getHandler().tickMenu();
-            }
-            case Paused, Shop -> {
-                mediator.getKeyInput().resetStates();
-            }
-            default -> {
-            }
+            case Menu, Settings, End -> mediator.getGameHandler().tickMenu();
+            case Paused, Shop -> mediator.getKeyInput().resetStates();
         }
     }
 
@@ -169,17 +176,17 @@ public class Game extends Canvas implements Runnable {
         switch (gameState) {
             case Game -> {
                 mediator.getStar().render(g);
-                mediator.getHandler().render(g);
+                mediator.getGameHandler().render(g);
                 mediator.getHud().render(g);
             }
             case Menu, End, Settings, Shop -> {
                 mediator.getStar().render(g);
-                mediator.getHandler().render(g);
+                mediator.getGameHandler().render(g);
                 mediator.getMenuManager().render(g);
             }
             case Paused -> {
                 mediator.getStar().render(g);
-                mediator.getHandler().render(g);
+                mediator.getGameHandler().render(g);
                 mediator.getHud().render(g);
                 mediator.getMenuManager().render(g);
             }
@@ -191,13 +198,18 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    public enum STATE {
+    public enum GAMESTATE {
         Menu,
         Settings,
         Game,
         End,
         Paused,
         Shop,
+    }
+
+    public enum DIFFICULTY {
+        Easy,
+        Hard,
     }
 
 }

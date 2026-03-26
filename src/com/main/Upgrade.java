@@ -1,112 +1,105 @@
 package com.main;
 
+import com.main.signals.GameSignals;
+
 public class Upgrade {
 
-    private int numberOfHealthUpgrades = 1;
-    private int numberOfSpeedUpgrades = 1;
-    private int numberOfHealthRefills = 1;
+    private int healthUpgradeCount = 1;
+    private int speedUpgradeCount = 1;
+    private int healthRefillCount = 1;
     private int score;
     private int level;
     private final float baseSpeed = 2;
     private float currentSpeed;
-
-
-
     private float playerCurrency;
-    public static final int baseHealth = 100;
-    public int currentHealth;
-    public int currentMaxHealth;
 
-
-    public int getNumberOfHealthUpgrades() {
-        return numberOfHealthUpgrades;
+    public Upgrade() {
+        GameSignals.GameStarted.connect(this::initializeValues);
+        GameSignals.HealthUpgradePurchased.connect(this::buyHealthUpgrade);
+        GameSignals.SpeedUpgradePurchased.connect(this::buySpeedUpgrade);
+        GameSignals.HealthRefillPurchased.connect(this::buyHealthRefill);
     }
 
-    public void setNumberOfHealthUpgrades(int numberOfHealthUpgrades) {
-        this.numberOfHealthUpgrades = numberOfHealthUpgrades;
+    public int getHealthUpgradeCount() {
+        return healthUpgradeCount;
+    }
+
+    public void setHealthUpgradeCount(int healthUpgradeCount) {
+        this.healthUpgradeCount = healthUpgradeCount;
     }
 
     public void incrementHealthUpgrades() {
-        this.numberOfHealthUpgrades += 1;
+        this.healthUpgradeCount += 1;
     }
 
     public int getCostOfNextHealthUpgrade() {
-        return 100 * (getNumberOfHealthUpgrades());
+        return 100 * (getHealthUpgradeCount());
     }
 
     public void buyHealthUpgrade() {
         if (playerCurrency > getCostOfNextHealthUpgrade()) {
             playerCurrency -= getCostOfNextHealthUpgrade();
             incrementHealthUpgrades();
-
-            currentMaxHealth = 100 + ((numberOfHealthUpgrades - 1) * 25);
-            currentHealth = Math.min(currentHealth + 25, currentMaxHealth);
+            GameSignals.baseHealthIncreased.emit(25);
         }
     }
 
-    public int getNumberOfSpeedUpgrades() {
-        return numberOfSpeedUpgrades;
+    public int getSpeedUpgradeCount() {
+        return speedUpgradeCount;
     }
 
-    public void setNumberOfSpeedUpgrades(int numberOfSpeedUpgrades) {
-        this.numberOfSpeedUpgrades = numberOfSpeedUpgrades;
+    public void setSpeedUpgradeCount(int speedUpgradeCount) {
+        this.speedUpgradeCount = speedUpgradeCount;
     }
 
-    public void incrementSpeedUpgrades() {
-        this.numberOfSpeedUpgrades += 1;
+    public void incrementSpeedUpgradeCount() {
+        this.speedUpgradeCount += 1;
     }
 
     public int getCostOfNextSpeedUpgrade() {
-        return 100 * (getNumberOfSpeedUpgrades());
+        return 100 * (getSpeedUpgradeCount());
     }
 
     public void buySpeedUpgrade() {
         if (playerCurrency > getCostOfNextSpeedUpgrade()) {
             playerCurrency -= getCostOfNextSpeedUpgrade();
-            incrementSpeedUpgrades();
-            currentSpeed = 2 + ((numberOfSpeedUpgrades - 1) * .1f);
+            incrementSpeedUpgradeCount();
+            currentSpeed = 2 + ((speedUpgradeCount - 1) * .1f);
         }
     }
 
-
-    public int getNumberOfHealthRefills() {
-        return numberOfHealthRefills;
+    public int getHealthRefills() {
+        return healthRefillCount;
     }
 
-    public void setNumberOfHealthRefills(int numberOfHealthRefills) {
-        this.numberOfHealthRefills = numberOfHealthRefills;
+    public void setHealthRefills(int healthRefills) {
+        this.healthRefillCount = healthRefills;
     }
 
     public int getCostOfNextHealthRefill() {
-        return 100 * (getNumberOfHealthRefills());
+        return 100 * (getHealthRefills());
     }
 
-    public void incrementNumberOfHealthRefills() {
-        this.numberOfHealthRefills += 1;
+    public void incrementHealthRefills() {
+        this.healthRefillCount += 1;
     }
 
     public void buyHealthRefill() {
         if (playerCurrency > getCostOfNextHealthRefill()) {
             playerCurrency -= getCostOfNextHealthRefill();
-            incrementNumberOfHealthRefills();
-            currentHealth = currentMaxHealth;
+            incrementHealthRefills();
+            GameSignals.healthRefilled.emit();
         }
     }
 
-    /**
-     * Sets the player's max health, current health, level, score, and currency to their initial values
-     */
     public void initializeValues() {
-        setCurrentMaxHealth(baseHealth);
-        setCurrentHealth(currentMaxHealth);
         setCurrentSpeed(getBaseSpeed());
         setLevel(1);
         setScore(0);
         setPlayerCurrency(0);
-        numberOfHealthUpgrades = 1;
-        numberOfSpeedUpgrades = 1;
-        numberOfHealthRefills = 1;
-
+        setHealthUpgradeCount(1);
+        setSpeedUpgradeCount(1);
+        setHealthRefills(1);
     }
 
     public float getPlayerCurrency() {
@@ -115,6 +108,10 @@ public class Upgrade {
 
     public void setPlayerCurrency(float playerCurrency) {
         this.playerCurrency = playerCurrency;
+    }
+
+    public void addPlayerCurrency(float currency) {
+        playerCurrency += currency;
     }
 
     public float getBaseSpeed() {
@@ -129,32 +126,16 @@ public class Upgrade {
         this.currentSpeed = currentSpeed;
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
-    }
-
-    public int getCurrentMaxHealth() {
-        return currentMaxHealth;
-    }
-
-    public void setCurrentMaxHealth(int currentMaxHealth) {
-        this.currentMaxHealth = currentMaxHealth;
-    }
-
-    public int getBaseHealth() {
-        return baseHealth;
-    }
-
     public int getScore() {
         return score;
     }
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void incrementScore() {
+        score += 1;
     }
 
     public int getLevel() {

@@ -2,7 +2,7 @@ package com.main.enemies;
 
 import com.main.Enemy;
 import com.main.Game;
-import com.main.Handler;
+import com.main.GameHandler;
 import com.main.ID;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ public class EnemyHard extends Enemy {
      * @param id      sets ID
      * @param handler sets/attaches to handler
      */
-    public EnemyHard(float x, float y, ID id, Handler handler) {
+    public EnemyHard(float x, float y, ID id, GameHandler handler) {
         super(x, y, id, handler);
         this.handler = handler;
         setWidth(32);

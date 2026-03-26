@@ -1,7 +1,7 @@
 package com.main.enemies;
 
 import com.main.Enemy;
-import com.main.Handler;
+import com.main.GameHandler;
 import com.main.ID;
 import com.main.Player;
 
@@ -26,7 +26,7 @@ public class EnemySmart extends Enemy {
      * @param handler sets/attaches to handler
      * @param player  sets the player
      */
-    public EnemySmart(float x, float y, ID id, Handler handler, Player player) {
+    public EnemySmart(float x, float y, ID id, GameHandler handler, Player player) {
         super(x, y, id, handler);
         setWidth(32);
         setHeight(32);

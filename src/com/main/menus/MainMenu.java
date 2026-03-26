@@ -1,10 +1,11 @@
 package com.main.menus;
 
 import com.main.*;
-import com.main.enemies.EnemyHard;
-import com.main.enemies.EnemySlow;
+import com.main.signals.GameSignals;
+
 import java.awt.*;
-import static com.main.GraphicsUtil.*;
+
+import static com.main.GraphicsUtil.drawRectAndString;
 
 public class MainMenu extends Menu {
     private final MenuBoxItem menuMenuBox, menuStartBox, menuSettingsBox, menuExitBox;
@@ -33,22 +34,14 @@ public class MainMenu extends Menu {
         }
         if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
-            togglePauseMusic();
-            mm.gameLive = true;
-            handler.clearAll();
-            upgrade.initializeValues();
+            GameSignals.GameStarted.emit();
             menuParticleCount = 0;
-            mediator.getGame().sleepThread(500);
-            mediator.getGame().gameState = Game.STATE.Game;
-            mediator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, handler, mediator));
-            if (!mediator.getGame().difficulty) new EnemySlow(1, 1, ID.SlowEnemy, handler);
-            else new EnemyHard(1, 1, ID.HardEnemy, handler);
         } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY))
         {
-            mediator.getGame().gameState = Game.STATE.Settings;
+            GameSignals.OpenSettings.emit();
         } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
         {
-            mediator.getGame().exitGame();
+            GameSignals.GameExited.emit();
         }
     }
 }
