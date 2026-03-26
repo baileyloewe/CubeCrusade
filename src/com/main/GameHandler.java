@@ -1,21 +1,27 @@
 package com.main;
 
+import com.main.signals.GameSignals;
+
 import java.awt.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class handlers ticking and rendering all game objects
  */
-public class Handler {
+public class GameHandler {
 
     CopyOnWriteArrayList<GameObject> GameObjectLinkedList = new CopyOnWriteArrayList<>();
+
+    public GameHandler() {
+        GameSignals.GameQuit.connect(this::clearAll);
+    }
 
     /**
      * Loops through the GameObjectLinkedList, ticking each item
      */
     public void tick() {
-        for (GameObject tempObject : GameObjectLinkedList) {
-            tempObject.tick();
+        for (GameObject gameObject : GameObjectLinkedList) {
+            gameObject.tick();
         }
     }
 
@@ -24,8 +30,8 @@ public class Handler {
      * Loops through the GameObjectLinkedList, ticking menu particles
      */
     public void tickMenu() {
-        for (GameObject tempObject : GameObjectLinkedList) {
-            if (tempObject.id == ID.MenuParticle) tempObject.tick();
+        for (GameObject gameObject : GameObjectLinkedList) {
+            if (gameObject.id == ID.MenuParticle) gameObject.tick();
         }
     }
 
@@ -34,8 +40,8 @@ public class Handler {
      * Loops through the GameObjectLinkedList, rendering each item
      */
     public void render(Graphics g) {
-        for (GameObject tempObject : GameObjectLinkedList) {
-            tempObject.render(g);
+        for (GameObject gameObject : GameObjectLinkedList) {
+            gameObject.render(g);
         }
     }
 
@@ -45,9 +51,9 @@ public class Handler {
      */
     public void clearEnemies() {
         for (int i = 0; i < GameObjectLinkedList.size(); i++) {
-            GameObject tempObject = GameObjectLinkedList.get(i);
-            if (tempObject.id != ID.Player) {
-                removeObject(tempObject);
+            GameObject gameObject = GameObjectLinkedList.get(i);
+            if (gameObject.id != ID.Player) {
+                removeObject(gameObject);
                 i--;
             }
         }

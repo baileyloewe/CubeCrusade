@@ -1,26 +1,30 @@
 package com.main;
 
+import com.main.signals.GameSignals;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
-    private Mediator mediator;
-
-    private final Handler handler;
+    private final GameHandler handler;
     private final float width;
     private final float height;
     private final BufferedImage playerImage;
     private boolean damageTimeout = false;
     private long timerEnd;
+    private int health = 100;
+    private int maxHealth = 100;
 
-    public Player(float x, float y, ID id, Handler handler, Mediator mediator) {
-        super(x, y, id, handler);
-        this.mediator = mediator;
-        this.handler = mediator.getHandler();
+    public Player(float x, float y, ID id, Mediator mediator) {
+        super(x, y, id, mediator.getGameHandler());
+        this.handler = mediator.getGameHandler();
         width = 64;
         height = 64;
         Sprite sprite = new Sprite(Game.spriteSheet);
         playerImage = sprite.grabSprite(0, 0, (int) width, (int) height);
+        GameSignals.GameExited.connect(this::reset);
+        GameSignals.baseHealthIncreased.connect(this::onBaseHealthIncreased);
+        GameSignals.healthRefilled.connect(() -> this.health = maxHealth);
     }
 
     @Override
@@ -38,16 +42,37 @@ public class Player extends GameObject {
     }
 
     private void collision() {
-        for (GameObject tempObject : handler.GameObjectLinkedList) {
-            if (!(tempObject.getID() == ID.Player) && !(tempObject.getID() == ID.MenuParticle)) {
+        for (GameObject gameObject : handler.GameObjectLinkedList) {
+            if (!(gameObject.getID() == ID.Player) && !(gameObject.getID() == ID.MenuParticle)) {
                 // Collision check
-                if (getBounds().intersects(tempObject.getBounds()) && !damageTimeout) {
-                    mediator.getUpgrade().setCurrentHealth(mediator.getUpgrade().getCurrentHealth() - 1);
+                if (getBounds().intersects(gameObject.getBounds()) && !damageTimeout) {
+                    GameSignals.healthLost.emit(-1);
+                    health -= 1;
                     damageTimeout = true;
                     timerEnd = System.currentTimeMillis() + 8;
                 }
             }
         }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void reset() {
+        health = 100;
+        maxHealth = 100;
+        setVelocityX(0);
+        setVelocityY(0);
+    }
+
+    public void onBaseHealthIncreased(int amount) {
+        health += amount;
+        maxHealth += amount;
     }
 
     @Override

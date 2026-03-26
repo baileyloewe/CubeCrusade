@@ -7,27 +7,32 @@ import java.awt.*;
  */
 public class HUD {
     private final Mediator mediator;
+    private Player player;
+    private Upgrade upgrade;
 
     private int greenValue = 255;
     private int redValue = 55;
 
     public HUD(Mediator mediator) {
         this.mediator = mediator;
+
     }
-
-
     /**
      * Clamps health to 0 - 100, updates health value colors, and increments the score
      */
     public void tick() {
-        // Clamp to prevent these value going out of their ranges
-        mediator.getUpgrade().setCurrentHealth((int)Game.clamp(mediator.getUpgrade().getCurrentHealth(), 0, mediator.getUpgrade().getCurrentMaxHealth()));
-        // Update green value
-        greenValue = (255 * mediator.getUpgrade().getCurrentHealth() / mediator.getUpgrade().getCurrentMaxHealth());
-        redValue =  (255 * ( mediator.getUpgrade().getCurrentMaxHealth() -  mediator.getUpgrade().getCurrentHealth()) /  mediator.getUpgrade().getCurrentMaxHealth());
+        player = mediator.getPlayer();
+        upgrade = mediator.getUpgrade();
 
-        mediator.getUpgrade().setScore(mediator.getUpgrade().getScore() + 1);
-        mediator.getUpgrade().setPlayerCurrency(mediator.getUpgrade().getPlayerCurrency() + .1f);
+        int health = player.getHealth();
+        int maxHealth = player.getMaxHealth();
+
+        // Update green value
+        greenValue = (255 * health / maxHealth);
+        redValue =  (255 * ( maxHealth -  health) /  maxHealth);
+
+        upgrade.incrementScore();
+        upgrade.addPlayerCurrency(.1f);
     }
 
     /**
@@ -36,6 +41,9 @@ public class HUD {
      * @param g Graphics object
      */
     public void render(Graphics g) {
+        player = mediator.getPlayer();
+        upgrade = mediator.getUpgrade();
+
         // Set background color of health & draw
         g.setColor(Color.white);
         g.fillRect(15, 15, 200, 16);
@@ -43,19 +51,19 @@ public class HUD {
         // Set health bar color & draw
         // Health changes color as it lowers
         g.setColor(new Color(redValue, greenValue, 0));
-        g.fillRect(15, 15,  (int) ((float)mediator.getUpgrade().getCurrentHealth() / (float)mediator.getUpgrade().getCurrentMaxHealth() * 200.f), 16);
+        g.fillRect(15, 15,  (int) ((float) player.getHealth() / (float) player.getMaxHealth() * 200.f), 16);
 
         // Draw the actual health value on top of the health bar
         g.setColor(Color.BLACK);
-        g.drawString("" + mediator.getUpgrade().getCurrentHealth(), 17, 28);
+        g.drawString("" + player.getHealth(), 17, 28);
 
         // Set border color & draw
         g.setColor(Color.WHITE);
         g.drawRect(15, 15, 200, 16);
         g.setFont(new Font("TimesRoman", Font.BOLD, 12));
-        g.drawString("Score: " + mediator.getUpgrade().getScore(), 15, 46);
-        g.drawString("Level: " + mediator.getUpgrade().getLevel(), 15, 62);
-        g.drawString("Gold: " + (int) mediator.getUpgrade().getPlayerCurrency(), 15, 78);
+        g.drawString("Score: " + upgrade.getScore(), 15, 46);
+        g.drawString("Level: " + upgrade.getLevel(), 15, 62);
+        g.drawString("Gold: " + (int) upgrade.getPlayerCurrency(), 15, 78);
         g.drawString("Shop (Space)", 15, 94);
         g.drawString("Pause (P)", 15, 110);
     }

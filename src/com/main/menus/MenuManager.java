@@ -6,13 +6,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class MenuManager extends MouseAdapter {
-    protected final Handler handler;
+    protected final GameHandler handler;
     protected final Mediator mediator;
     protected final Upgrade upgrade;
     protected final int centeredX = Game.WIDTH / 2;
     protected final int centeredY = Game.HEIGHT / 2 - 16;
     protected int mouseX, mouseY;
-    protected boolean gameLive = false;
 
     public GameOverMenu gameOverMenu;
     public MainMenu mainMenu;
@@ -22,8 +21,9 @@ public class MenuManager extends MouseAdapter {
 
     public MenuManager(Mediator mediator) {
         this.mediator = mediator;
-        this.handler = mediator.getHandler();
+        this.handler = mediator.getGameHandler();
         this.upgrade = mediator.getUpgrade();
+        this.init();
     }
 
     public void mousePressed(MouseEvent e) {

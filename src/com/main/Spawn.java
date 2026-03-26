@@ -69,19 +69,19 @@ public class Spawn {
             if (!PlayerPos.intersects(possibleEnemyPos)) {
                 switch (type) {
                     case "Boss" -> {
-                        mediator.getHandler().clearEnemies();
-                        new EnemyBoss(ID.BossEnemy, mediator.getHandler());
+                        mediator.getGameHandler().clearEnemies();
+                        new EnemyBoss(ID.BossEnemy, mediator.getGameHandler());
                     }
-                    case "Smart" -> new EnemySmart(x, y, ID.SmartEnemy, mediator.getHandler(), mediator.getPlayer());
+                    case "Smart" -> new EnemySmart(x, y, ID.SmartEnemy, mediator.getGameHandler(), mediator.getPlayer());
                     case "Fast" -> {
-                        if (!mediator.getGame().difficulty)
-                            new EnemyFast(x, y, ID.FastEnemy, mediator.getHandler());
-                        else new EnemyFast(x, y, ID.FastEnemy, mediator.getHandler(), 3.f, 3.f);
+                        if (mediator.getGame().difficulty == Game.DIFFICULTY.Easy)
+                            new EnemyFast(x, y, ID.FastEnemy, mediator.getGameHandler());
+                        else new EnemyFast(x, y, ID.FastEnemy, mediator.getGameHandler(), 3.f, 3.f);
                     }
                     case "Slow" -> {
-                        if (!mediator.getGame().difficulty)
-                            new EnemySlow(x, y, ID.SlowEnemy, mediator.getHandler());
-                        else new EnemyHard(x, y, ID.HardEnemy, mediator.getHandler());
+                        if (mediator.getGame().difficulty == Game.DIFFICULTY.Easy)
+                            new EnemySlow(x, y, ID.SlowEnemy, mediator.getGameHandler());
+                        else new EnemyHard(x, y, ID.HardEnemy, mediator.getGameHandler());
                     }
                     default -> {
                     }

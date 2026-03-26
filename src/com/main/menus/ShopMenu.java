@@ -1,6 +1,8 @@
 package com.main.menus;
 
 import com.main.*;
+import com.main.signals.GameSignals;
+
 import java.awt.*;
 import static com.main.GraphicsUtil.*;
 import static com.main.GraphicsUtil.drawRectAndString;
@@ -39,13 +41,15 @@ public class ShopMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(shopUpgradeHealthBox, mouseX, mouseY)) {
-            upgrade.buyHealthUpgrade();
+            GameSignals.HealthUpgradePurchased.emit();
         } else if (mouseOverItem(shopUpgradeSpeedBox, mouseX, mouseY)) {
             upgrade.buySpeedUpgrade();
+            GameSignals.SpeedUpgradePurchased.emit();
         } else if (mouseOverItem(shopRefillHealthBox, mouseX, mouseY)) {
             upgrade.buyHealthRefill();
+            GameSignals.HealthRefillPurchased.emit();
         } else if (mouseOverItem(shopBackBox, mouseX, mouseY)) {
-            mediator.getGame().gameState = Game.STATE.Game;
+            GameSignals.GameResumed.emit();
         }
     }
 
