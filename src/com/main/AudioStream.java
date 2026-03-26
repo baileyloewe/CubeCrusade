@@ -1,86 +1,136 @@
 package com.main;
 
+import com.main.signals.GameSignals;
+
 import javax.sound.sampled.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class AudioStream {
-    private static String filePath;
     public final Game game;
-    public AudioStream.MUSICSTATE musicState = MUSICSTATE.Initialized;
+    public MUSICSTATE musicState = MUSICSTATE.Initialized;
     float volumeLevel = 0;
-    private boolean muted = false;
     private Long currentFrame;
     private Clip audioStream;
-    private AudioInputStream audioInputStream;
+    private final Map<AUDIONAME, String> audioFiles = new HashMap<>();
+    private AUDIONAME currentAudio = AUDIONAME.Menu;
+    private boolean muted = false;
 
-    public AudioStream(String path, Game game) {
+    public enum MUSICSTATE {
+        Initialized, Playing, Stopped
+    }
+
+    public enum AUDIONAME {
+        Menu, Game
+    }
+
+    public AudioStream(Game game) {
         this.game = game;
-            filePath = path;
-            try {
-                InputStream inputStream = getClass().getResourceAsStream(filePath);
-                if (inputStream == null) {
-                    throw new RuntimeException("Audio file not found: " + filePath);
-                }
-                BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
-                audioInputStream = AudioSystem.getAudioInputStream(bufferedStream);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
-            }
+        audioFiles.put(AUDIONAME.Menu, "/resources/Half-Mystery.wav");
+        audioFiles.put(AUDIONAME.Game, "/resources/Voxel Revolution.wav");
 
-            try {
-                audioStream = AudioSystem.getClip();
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            }
+        GameSignals.AudioAdjusted.connect(this::adjustVolume);
+        GameSignals.GameQuit.connect(this::swapAudioStream);
+        GameSignals.GameStarted.connect(this::swapAudioStream);
+        GameSignals.MuteToggled.connect(this::onToggleMute);
 
-            try {
-                audioStream.open(audioInputStream);
-            } catch (LineUnavailableException | IOException e) {
-                e.printStackTrace();
-            }
-            audioStream.loop(Clip.LOOP_CONTINUOUSLY);
-            this.adjustAudioVolume(-19);
-            this.pauseAudioStream();
+        try {
+            audioStream = AudioSystem.getClip();
+            audioStream.open(loadAudioInputStream(audioFiles.get(AUDIONAME.Menu)));
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
+        play();
+        adjustVolume(-19);
+        currentFrame = audioStream.getMicrosecondPosition();
+        stop();
     }
 
-    public boolean isMuted() {
-        return this.muted;
+    private AudioInputStream loadAudioInputStream(String filePath) throws IOException, UnsupportedAudioFileException {
+        InputStream inputStream = getClass().getResourceAsStream(filePath);
+        if (inputStream == null) {
+            throw new RuntimeException("Audio file not found: " + filePath);
+        }
+        return AudioSystem.getAudioInputStream(new BufferedInputStream(inputStream));
     }
 
-    public void toggleMute() {
+    public void swapAudioStream() {
+        if (currentAudio == AUDIONAME.Menu) {
+            currentAudio = AUDIONAME.Game;
+        } else {
+            currentAudio = AUDIONAME.Menu;
+        }
+        resetAudioStream(audioFiles.get(currentAudio));
+    }
+
+    public void resetAudioStream(String filePath) {
         synchronized (game) {
-            this.muted = !this.muted;
-            if (this.muted) {
-                pauseAudioStreamNoState();
-            } else {
-                if (this.musicState == MUSICSTATE.Playing) {
-                    this.playAudioStream();
-                }
+            audioStream.close();
+            try {
+                audioStream.open(loadAudioInputStream(filePath));
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
             }
+            if (!muted) play();
         }
     }
 
-    public void toggleMusicPause() {
-        synchronized (game) {
-            if (this.muted) {
-                if (this.musicState == MUSICSTATE.Playing) this.musicState = MUSICSTATE.Paused;
-                else this.musicState = MUSICSTATE.Playing;
-            } else if (this.musicState == MUSICSTATE.Playing) {
-                pauseAudioStream();
-            } else playAudioStream();
+    private void onToggleMute() {
+        if (this.muted) {
+            this.muted = false;
+            play();
+        } else {
+            this.muted = true;
+            stop();
         }
     }
 
-    public void adjustAudioVolume(float volume) {
+    public boolean isPlaying() {
+        return musicState == MUSICSTATE.Playing;
+    }
+
+    private void play() {
+        audioStream.loop(Clip.LOOP_CONTINUOUSLY);
+        musicState = MUSICSTATE.Playing;
+    }
+
+    private void stop() {
+        currentFrame = audioStream.getMicrosecondPosition();
+        audioStream.stop();
+        musicState = MUSICSTATE.Stopped;
+    }
+
+    public void startAudioStream() {
+        synchronized (game) {
+            audioStream.setMicrosecondPosition(currentFrame);
+            play();
+        }
+    }
+
+    public void pauseAudioStream() {
+        synchronized (game) {
+            if (musicState == MUSICSTATE.Stopped) return;
+            stop();
+        }
+    }
+
+    // For use before closing the application
+    public void closeAudioStream() {
+        synchronized (game) {
+            currentFrame = 0L;
+            stop();
+            audioStream.close();
+        }
+    }
+
+    public void adjustVolume(float delta) {
         synchronized (game) {
             FloatControl gainControl = (FloatControl) audioStream.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeLevel += volume;
-            if (volumeLevel < -80) {
-                volumeLevel = -80;
-            } else if (volumeLevel > 6) volumeLevel = 6;
+            volumeLevel = Math.clamp(volumeLevel + delta, -80, 6);
             gainControl.setValue(volumeLevel);
         }
     }
@@ -91,85 +141,4 @@ public class AudioStream {
             return gainControl.getValue();
         }
     }
-
-    public void playAudioStream() {
-        synchronized (game) {
-            audioStream.loop(Clip.LOOP_CONTINUOUSLY);
-            audioStream.start();
-            musicState = MUSICSTATE.Playing;
-        }
-    }
-
-    public void pauseAudioStreamNoState() {
-        synchronized (game) {
-            if (musicState == MUSICSTATE.Paused) return;
-            this.currentFrame = this.audioStream.getMicrosecondPosition();
-            audioStream.stop();
-        }
-    }
-
-    public void pauseAudioStream() {
-        synchronized (game) {
-            if (musicState == MUSICSTATE.Paused) return;
-            this.currentFrame = this.audioStream.getMicrosecondPosition();
-            audioStream.stop();
-            musicState = MUSICSTATE.Paused;
-        }
-    }
-
-    public void resumeAudioStream() {
-        synchronized (game) {
-            if (musicState == MUSICSTATE.Playing) return;
-            audioStream.close();
-            resetAudioStream();
-            audioStream.setMicrosecondPosition(currentFrame);
-            this.playAudioStream();
-        }
-    }
-
-    public void restartAudioStream() {
-        synchronized (game) {
-            audioStream.stop();
-            audioStream.close();
-            resetAudioStream();
-            currentFrame = 0L;
-            audioStream.setMicrosecondPosition(0);
-            this.playAudioStream();
-        }
-    }
-
-    public void stopAudioStream() {
-        synchronized (game) {
-            currentFrame = 0L;
-            audioStream.stop();
-            audioStream.close();
-        }
-    }
-
-    public void resetAudioStream() {
-        synchronized (game) {
-            try {
-                InputStream inputStream = getClass().getResourceAsStream(filePath);
-                if (inputStream == null) {
-                    throw new RuntimeException("Audio file not found: " + filePath);
-                }
-                BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
-                audioInputStream = AudioSystem.getAudioInputStream(bufferedStream);
-            } catch (UnsupportedAudioFileException | IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                audioStream.open(audioInputStream);
-            } catch (LineUnavailableException | IOException e) {
-                e.printStackTrace();
-            }
-            audioStream.loop(Clip.LOOP_CONTINUOUSLY);
-        }
-    }
-
-
-    public enum MUSICSTATE {
-        Initialized, Playing, Paused,
-    }
-
 }

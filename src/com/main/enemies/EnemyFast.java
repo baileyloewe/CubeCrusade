@@ -1,7 +1,7 @@
 package com.main.enemies;
 
 import com.main.Enemy;
-import com.main.Handler;
+import com.main.GameHandler;
 import com.main.ID;
 
 import java.awt.*;
@@ -19,7 +19,7 @@ public class EnemyFast extends Enemy {
      * @param id      sets ID
      * @param handler sets/attaches to handler
      */
-    public EnemyFast(float x, float y, ID id, Handler handler) {
+    public EnemyFast(float x, float y, ID id, GameHandler handler) {
         super(x, y, id, handler);
         setWidth(32);
         setHeight(32);
@@ -31,7 +31,7 @@ public class EnemyFast extends Enemy {
         setImage(128, 0, (int) width, (int) height);
     }
 
-    public EnemyFast(float x, float y, ID id, Handler handler, float velocityX, float velocityY) {
+    public EnemyFast(float x, float y, ID id, GameHandler handler, float velocityX, float velocityY) {
         super(x, y, id, handler);
         setWidth(16);
         setHeight(16);

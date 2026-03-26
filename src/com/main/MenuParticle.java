@@ -19,7 +19,7 @@ public class MenuParticle extends Enemy
      @param id         sets ID
      @param handler    sets/attaches to handler
      */
-    public MenuParticle(float x, float y, ID id, Handler handler)
+    public MenuParticle(float x, float y, ID id, GameHandler handler)
     {
         super(x, y, id, handler);
         setWidth(r.nextInt(16,32));

@@ -21,7 +21,7 @@ public class EnemyBoss extends Enemy {
      * @param id      sets ID
      * @param handler sets/attaches to handler
      */
-    public EnemyBoss(ID id, Handler handler) {
+    public EnemyBoss(ID id, GameHandler handler) {
         super(Game.WIDTH / 2.f, -50, id, handler);
         setX(Game.WIDTH / 2.f - 32);
         setWidth(128);

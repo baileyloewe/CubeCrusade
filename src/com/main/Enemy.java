@@ -19,7 +19,7 @@ public abstract class Enemy extends GameObject {
      * @param id      sets ID
      * @param handler sets/attaches to handler
      */
-    public Enemy(float x, float y, ID id, Handler handler) {
+    public Enemy(float x, float y, ID id, GameHandler handler) {
         super(x, y, id, handler);
         this.r = new Random();
     }

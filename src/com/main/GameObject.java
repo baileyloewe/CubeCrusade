@@ -11,7 +11,7 @@ public abstract class GameObject
     protected float x, y, width, height;
     protected ID id;
     protected float velocityX, velocityY;
-    protected Handler handler;
+    protected GameHandler handler;
     protected BufferedImage image;
 
     /**
@@ -21,7 +21,7 @@ public abstract class GameObject
      @param id         sets ID
      @param handler    sets/attaches to handler
      */
-    public GameObject(float x, float y, ID id, Handler handler)
+    public GameObject(float x, float y, ID id, GameHandler handler)
     {
         this.x = x;
         this.y = y;
@@ -33,7 +33,7 @@ public abstract class GameObject
 
     public GameObject(Mediator mediator)
     {
-        handler = mediator.getHandler();
+        handler = mediator.getGameHandler();
         handler.addObject(this);
     }
 

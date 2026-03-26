@@ -5,7 +5,7 @@ import com.main.menus.MenuManager;
 public class Mediator {
 
     private Game game;
-    private Handler handler;
+    private GameHandler gameHandler;
     private Player player;
     private Upgrade upgrade;
     private Star star;
@@ -13,8 +13,7 @@ public class Mediator {
     private Spawn spawn;
     private KeyInput keyInput;
     private MenuManager menuManager;
-    private AudioStream gameAudio;
-    private AudioStream menuAudio;
+    private AudioStream audioStream;
     private SpriteLoader spriteLoader;
 
     public Mediator() {}
@@ -27,12 +26,12 @@ public class Mediator {
         this.game = game;
     }
 
-    public Handler getHandler() {
-        return handler;
+    public GameHandler getGameHandler() {
+        return gameHandler;
     }
 
-    public void setHandler(Handler handler) {
-        this.handler = handler;
+    public void setGameHandler(GameHandler handler) {
+        this.gameHandler = handler;
     }
 
     public Player getPlayer() {
@@ -91,20 +90,12 @@ public class Mediator {
         this.menuManager = menuManager;
     }
 
-    public AudioStream getGameAudio() {
-        return gameAudio;
+    public AudioStream getAudioStream() {
+        return audioStream;
     }
 
-    public void setGameAudio(AudioStream gameAudio) {
-        this.gameAudio = gameAudio;
-    }
-
-    public AudioStream getMenuAudio() {
-        return menuAudio;
-    }
-
-    public void setMenuAudio(AudioStream menuAudio) {
-        this.menuAudio = menuAudio;
+    public void setAudioStream(AudioStream audioStream) {
+        this.audioStream = audioStream;
     }
 
     public SpriteLoader getSpriteLoader() {
@@ -114,6 +105,5 @@ public class Mediator {
     public void setSpriteLoader(SpriteLoader spriteLoader) {
         this.spriteLoader = spriteLoader;
     }
-
-
 }
+

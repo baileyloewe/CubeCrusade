@@ -1,6 +1,8 @@
 package com.main.menus;
 
 import com.main.*;
+import com.main.signals.GameSignals;
+
 import java.awt.*;
 import static com.main.GraphicsUtil.*;
 
@@ -15,10 +17,7 @@ public class GameOverMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
-            handler.clearAll();
-            mm.gameLive = false;
-            mediator.getGame().gameState = Game.STATE.Menu;
-            togglePauseMusic();
+            GameSignals.GameQuit.emit();
             new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
         }
     }
