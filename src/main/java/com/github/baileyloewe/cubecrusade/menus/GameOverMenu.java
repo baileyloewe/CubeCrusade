@@ -2,11 +2,13 @@ package com.github.baileyloewe.cubecrusade.menus;
 
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
-import com.github.baileyloewe.cubecrusade.MenuParticle;
+import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
-import static com.github.baileyloewe.cubecrusade.GraphicsUtil.*;
+
+import static com.github.baileyloewe.cubecrusade.GraphicsUtil.Fonts;
+import static com.github.baileyloewe.cubecrusade.GraphicsUtil.drawRectAndString;
 
 public class GameOverMenu extends Menu {
     private final MenuBoxItem mainMenuBox, gameOverBox;
@@ -19,13 +21,13 @@ public class GameOverMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
-            GameSignals.GameQuit.emit();
-            new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
+            GameSignals.gameQuit.emit();
+            MenuParticle.create( ID.MenuParticle, gameHandler, mouseX, mouseY);
         }
     }
 
     public void render(Graphics g) {
-        handler.clearAll();
+        gameHandler.clearAll();
         drawRectAndString(g, gameOverBox, Fonts.XLARGE);
         g.setFont(Fonts.SMALL.getFont());
         g.drawString("You lost with a score of " + upgrade.getScore() + "\n on level " + upgrade.getLevel(), centeredX - 180, centeredY);

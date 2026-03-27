@@ -1,10 +1,12 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
-import com.github.baileyloewe.cubecrusade.Game;
+import com.github.baileyloewe.cubecrusade.Difficulty;
+import com.github.baileyloewe.cubecrusade.GameState;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
+
 import static com.github.baileyloewe.cubecrusade.GraphicsUtil.*;
 
 public class SettingsMenu extends Menu {
@@ -26,20 +28,20 @@ public class SettingsMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(backBox, mouseX, mouseY)) {
-            if (serviceLocator.getGame().gameActive) serviceLocator.getGame().gameState = Game.GAMESTATE.Paused;
-            else serviceLocator.getGame().gameState = Game.GAMESTATE.Menu;
+            if (serviceLocator.getGame().gameActive) serviceLocator.getGame().gameState = GameState.PAUSED;
+            else serviceLocator.getGame().gameState = GameState.MENU;
         }
         else if (mouseOverItem(volumeUpBox, mouseX, mouseY)) {
-            GameSignals.AudioAdjusted.emit(5);
+            GameSignals.audioAdjusted.emit(5);
         } else if (mouseOverItem(volumeDownBox, mouseX, mouseY)) {
-            GameSignals.AudioAdjusted.emit(-5);
+            GameSignals.audioAdjusted.emit(-5);
         } else if (mouseOverItem(muteBox, mouseX, mouseY)) {
-            GameSignals.MuteToggled.emit();
+            GameSignals.muteToggled.emit();
         } else if (!serviceLocator.getGame().gameActive) {
             if (mouseOverItem(difficultyEasyBox, mouseX, mouseY)) {
-                serviceLocator.getGame().difficulty = Game.DIFFICULTY.Easy;
+                serviceLocator.getGame().difficulty = Difficulty.EASY;
             } else if (mouseOverItem(difficultyHardBox, mouseX, mouseY)) {
-                serviceLocator.getGame().difficulty = Game.DIFFICULTY.Hard;
+                serviceLocator.getGame().difficulty = Difficulty.HARD;
             }
         }
     }
@@ -59,7 +61,7 @@ public class SettingsMenu extends Menu {
 
         g.fillRect(centeredX - 75, volumeDownBox.rect.y + 15, 150, 2);
 
-        if (serviceLocator.getGame().difficulty == Game.DIFFICULTY.Easy) {
+        if (serviceLocator.getGame().difficulty == Difficulty.EASY) {
             drawRectAndStringWithColor(g, difficultyEasyBox, Fonts.MEDIUM, new Color(1, 72, 12));
             drawRectAndStringWithColor(g, difficultyHardBox, Fonts.MEDIUM, Color.black);
         } else {

@@ -1,18 +1,18 @@
-package com.github.baileyloewe.cubecrusade;
+package com.github.baileyloewe.cubecrusade.entities;
+
+import com.github.baileyloewe.cubecrusade.GameHandler;
 
 import java.awt.*;
-import java.awt.Point;
 
-public class Star extends GameObject{
+public class Stars extends Entity {
 
     private final Point[] locations = new Point[26];
-    /**
-     * Creates a game object with an x-coordinate, x-coordinate, ID, and attaches it to the ID
-     */
-    public Star(ServiceLocator serviceLocator) {
-        super(serviceLocator);
+
+    public Stars(GameHandler gameHandler) {
+        super(gameHandler);
         setLocations();
     }
+
 
     public void setLocations() {
         // Manually created star locations
@@ -45,11 +45,6 @@ public class Star extends GameObject{
     }
 
     @Override
-    public void tick() {
-
-    }
-
-    @Override
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
         for (Point location : locations) {
@@ -58,8 +53,4 @@ public class Star extends GameObject{
         }
     }
 
-    @Override
-    public Rectangle getBounds() {
-        return null;
-    }
 }

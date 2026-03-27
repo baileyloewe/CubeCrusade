@@ -1,5 +1,7 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Player;
+
 import java.awt.*;
 
 /**
