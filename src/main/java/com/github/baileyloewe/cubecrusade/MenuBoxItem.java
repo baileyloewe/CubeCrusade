@@ -15,12 +15,4 @@ public class MenuBoxItem {
     public MenuBoxItem(int x, int y, int width, int height) {
         this.rect = new Rectangle(x, y, width, height);
     }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }

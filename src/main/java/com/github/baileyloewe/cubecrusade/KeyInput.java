@@ -92,14 +92,14 @@ public class KeyInput extends KeyAdapter {
             if (!mostRecentXAxis) velocityX = upgrade.getCurrentSpeed() * -1;
         }
 
-        player.setVelocityX(player.normalizeSpeed(velocityX, velocityY, upgrade.getCurrentSpeed())[0]);
-        player.setVelocityY(player.normalizeSpeed(velocityX, velocityY, upgrade.getCurrentSpeed())[1]);
+        player.setXVelocity(velocityX);
+        player.setYVelocity(velocityY);
     }
 
     public void resetStates() {
         wPressed = aPressed = sPressed = dPressed = mostRecentXAxis = mostRecentYaxis = false;
-        serviceLocator.getPlayer().setVelocityX(0);
-        serviceLocator.getPlayer().setVelocityY(0);
+        serviceLocator.getPlayer().setXVelocity(0);
+        serviceLocator.getPlayer().setYVelocity(0);
     }
 
 }

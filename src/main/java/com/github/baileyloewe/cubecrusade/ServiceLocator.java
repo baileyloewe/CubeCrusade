@@ -1,6 +1,8 @@
 package com.github.baileyloewe.cubecrusade;
 
+
 import com.github.baileyloewe.cubecrusade.entities.Player;
+import com.github.baileyloewe.cubecrusade.entities.Stars;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 
 public class ServiceLocator {
@@ -9,7 +11,7 @@ public class ServiceLocator {
     private GameHandler gameHandler;
     private Player player;
     private Upgrade upgrade;
-    private Star star;
+    private Stars stars;
     private HUD hud;
     private Spawn spawn;
     private KeyInput keyInput;
@@ -51,12 +53,12 @@ public class ServiceLocator {
         this.upgrade = upgrade;
     }
 
-    public Star getStar() {
-        return star;
+    public Stars getStar() {
+        return stars;
     }
 
-    public void setStar(Star star) {
-        this.star = star;
+    public void setStar(Stars stars) {
+        this.stars = stars;
     }
 
     public HUD getHud() {

@@ -1,9 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.entities.Player;
-import com.github.baileyloewe.cubecrusade.entities.enemies.EnemyHard;
-import com.github.baileyloewe.cubecrusade.entities.enemies.EnemySlow;
-import com.github.baileyloewe.cubecrusade.entities.enemies.MenuParticle;
+import com.github.baileyloewe.cubecrusade.entities.*;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -39,7 +36,7 @@ public class Game extends Canvas implements Runnable {
         serviceLocator.setUpgrade(new Upgrade());
         serviceLocator.setHud(new HUD(serviceLocator));
         serviceLocator.setSpawn(new Spawn(serviceLocator));
-        serviceLocator.setStar(new Star(serviceLocator));
+        serviceLocator.setStar(new Stars(serviceLocator.getGameHandler()));
         serviceLocator.setKeyInput(new KeyInput(serviceLocator));
         serviceLocator.setAudioStream(new AudioStream(this));
         serviceLocator.setMenuManager(new MenuManager(serviceLocator));
@@ -48,7 +45,7 @@ public class Game extends Canvas implements Runnable {
         this.addKeyListener(serviceLocator.getKeyInput());
         this.addMouseListener(serviceLocator.getMenuManager());
 
-        new MenuParticle(r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16), ID.MenuParticle, serviceLocator.getGameHandler());
+        serviceLocator.getGameHandler().addEntity(MenuParticle.create(ID.MenuParticle, serviceLocator.getGameHandler(), r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16)));
 
         serviceLocator.getAudioStream().startAudioStream();
         spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
@@ -69,9 +66,10 @@ public class Game extends Canvas implements Runnable {
     public void onGameStarted() {
         serviceLocator.getGameHandler().clearAll();
         sleepThread(500);
-        serviceLocator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, serviceLocator));
-        if (difficulty == Difficulty.EASY) new EnemySlow(1, 1, ID.SlowEnemy, serviceLocator.getGameHandler());
-        else new EnemyHard(1, 1, ID.HardEnemy, serviceLocator.getGameHandler());
+        Player player = Player.create(ID.Player, serviceLocator.getGameHandler(), Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32);
+        serviceLocator.setPlayer(player);
+        if (difficulty == Difficulty.EASY) EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), 1, 1);
+        else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), 1, 1);
         gameState = GameState.GAME;
         gameActive = true;
     }

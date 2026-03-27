@@ -1,6 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.entities.enemies.*;
+import com.github.baileyloewe.cubecrusade.entities.*;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -63,25 +63,25 @@ public class Spawn {
              height = 250 / 12 * 9 * 2 + 32
 
             */
-            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getxPos() - 250, (int) serviceLocator.getPlayer().getyPos() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
+            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getXPos() - 250, (int) serviceLocator.getPlayer().getYPos() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
             Rectangle possibleEnemyPos = new Rectangle((int) x, (int) y, 16, 16);
 
             if (!PlayerPos.intersects(possibleEnemyPos)) {
                 switch (type) {
                     case "Boss" -> {
                         serviceLocator.getGameHandler().clearEnemies();
-                        new EnemyBoss(ID.BossEnemy, serviceLocator.getGameHandler());
+                        EnemyBoss.create(ID.BossEnemy, serviceLocator.getGameHandler());
                     }
-                    case "Smart" -> new EnemySmart(x, y, ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer());
+                    case "Smart" -> EnemySmart.create(ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer(), x, y);
                     case "Fast" -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
-                            new EnemyFast(x, y, ID.FastEnemy, serviceLocator.getGameHandler());
-                        else new EnemyFast(x, y, ID.FastEnemy, serviceLocator.getGameHandler(), 3.f, 3.f);
+                            EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y);
+                        else EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), 3.f, 3.f);
                     }
                     case "Slow" -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
-                            new EnemySlow(x, y, ID.SlowEnemy, serviceLocator.getGameHandler());
-                        else new EnemyHard(x, y, ID.HardEnemy, serviceLocator.getGameHandler());
+                            EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), x, y);
+                        else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), x, y);
                     }
                     default -> {
                     }

@@ -25,7 +25,7 @@ public class GameHandler {
 
     public void tickMenuParticles() {
         for (Entity entity : entities) {
-            if (entity.getId() == ID.MenuParticle) entity.tick();
+            if (entity.getID() == ID.MenuParticle) entity.tick();
         }
     }
 

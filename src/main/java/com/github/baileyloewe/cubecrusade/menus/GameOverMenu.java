@@ -2,10 +2,13 @@ package com.github.baileyloewe.cubecrusade.menus;
 
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
+import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
-import static com.github.baileyloewe.cubecrusade.GraphicsUtil.*;
+
+import static com.github.baileyloewe.cubecrusade.GraphicsUtil.Fonts;
+import static com.github.baileyloewe.cubecrusade.GraphicsUtil.drawRectAndString;
 
 public class GameOverMenu extends Menu {
     private final MenuBoxItem mainMenuBox, gameOverBox;
@@ -19,7 +22,7 @@ public class GameOverMenu extends Menu {
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
             GameSignals.gameQuit.emit();
-            new MenuParticle(mouseX, mouseY, ID.MenuParticle, gameHandler);
+            MenuParticle.create( ID.MenuParticle, gameHandler, mouseX, mouseY);
         }
     }
 
