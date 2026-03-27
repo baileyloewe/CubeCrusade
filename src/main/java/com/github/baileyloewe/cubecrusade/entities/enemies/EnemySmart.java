@@ -1,9 +1,8 @@
-package com.github.baileyloewe.cubecrusade.enemies;
+package com.github.baileyloewe.cubecrusade.entities.enemies;
 
-import com.github.baileyloewe.cubecrusade.Enemy;
 import com.github.baileyloewe.cubecrusade.GameHandler;
 import com.github.baileyloewe.cubecrusade.ID;
-import com.github.baileyloewe.cubecrusade.Player;
+import com.github.baileyloewe.cubecrusade.entities.Player;
 
 import java.awt.*;
 import java.util.Random;
@@ -18,19 +17,19 @@ public class EnemySmart extends Enemy {
 
 
     /**
-     * Creates a smart enemy object with an x-coordinate, y-coordinate, ID, attaches it to the handler, and adds a player
+     * Creates a smart enemy object with an x-coordinate, y-coordinate, ID, attaches it to the gameHandler, and adds a player
      *
      * @param x       sets x-coordinate
      * @param y       sets y-coordinate
      * @param id      sets ID
-     * @param handler sets/attaches to handler
+     * @param gameHandler sets/attaches to gameHandler
      * @param player  sets the player
      */
-    public EnemySmart(float x, float y, ID id, GameHandler handler, Player player) {
-        super(x, y, id, handler);
+    public EnemySmart(float x, float y, ID id, GameHandler gameHandler, Player player) {
+        super(x, y, id, gameHandler);
         setWidth(32);
         setHeight(32);
-        this.handler = handler;
+        this.gameHandler = gameHandler;
         this.player = player;
         setColor(Color.GREEN);
         r = new Random();

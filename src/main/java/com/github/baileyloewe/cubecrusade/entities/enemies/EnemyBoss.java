@@ -1,4 +1,4 @@
-package com.github.baileyloewe.cubecrusade.enemies;
+package com.github.baileyloewe.cubecrusade.entities.enemies;
 
 import com.github.baileyloewe.cubecrusade.*;
 
@@ -12,34 +12,32 @@ public class EnemyBoss extends Enemy {
     private final Random r;
     private int timer = 80;
     private int timer2 = 50;
-    private long lifetimer;
-
+    private final long lifespan;
 
     /**
-     * Creates a boss enemy object with an ID and attaches it to the handler
+     * Creates a boss enemy object with an ID and attaches it to the gameHandler
      *
      * @param id      sets ID
-     * @param handler sets/attaches to handler
+     * @param gameHandler sets/attaches to gameHandler
      */
-    public EnemyBoss(ID id, GameHandler handler) {
-        super(Game.WIDTH / 2.f, -50, id, handler);
+    public EnemyBoss(ID id, GameHandler gameHandler) {
+        super(Game.WIDTH / 2.f, -50, id, gameHandler);
         setX(Game.WIDTH / 2.f - 32);
         setWidth(128);
         setHeight(128);
         velocityX = velocityY = 2;
         r = new Random();
-        this.handler = handler;
+        this.gameHandler = gameHandler;
         setColor(Color.RED);
         velocityY = 1;
         setImage(0, 128, (int) width, (int) height);
-        lifetimer = System.currentTimeMillis() + 8000;
-
+        lifespan = System.currentTimeMillis() + 8000;
     }
 
     @Override
     public void tick() {
-        if (System.currentTimeMillis() > lifetimer) {
-            handler.clearEnemies();
+        if (System.currentTimeMillis() > lifespan) {
+            gameHandler.clearEnemies();
         }
         setX(getX() + getVelocityX());
         setY(getY() + getVelocityY());
@@ -54,7 +52,7 @@ public class EnemyBoss extends Enemy {
             if (getVelocityX() == 0) setVelocityX(2);
             int spawn = r.nextInt(10);
             if (spawn == 0) {
-                handler.addObject(new EnemyBossBullet((int) x + (getWidth() / 2) - 8, (int) y + (getHeight() / 2) - 8, ID.BossEnemyBullet, handler));
+                gameHandler.addEntity(new EnemyBossBullet((int) x + (getWidth() / 2) - 8, (int) y + (getHeight() / 2) - 8, ID.BossEnemyBullet, gameHandler));
             }
         }
 

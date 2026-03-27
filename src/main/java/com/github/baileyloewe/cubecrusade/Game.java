@@ -1,7 +1,9 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.enemies.EnemyHard;
-import com.github.baileyloewe.cubecrusade.enemies.EnemySlow;
+import com.github.baileyloewe.cubecrusade.entities.Player;
+import com.github.baileyloewe.cubecrusade.entities.enemies.EnemyHard;
+import com.github.baileyloewe.cubecrusade.entities.enemies.EnemySlow;
+import com.github.baileyloewe.cubecrusade.entities.enemies.MenuParticle;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -25,9 +27,9 @@ public class Game extends Canvas implements Runnable {
     public static final int WIDTH = 1224, HEIGHT = WIDTH / 12 * 9;
     public static BufferedImage spriteSheet;
 
-    public GAMESTATE gameState = GAMESTATE.Menu;
+    public GameState gameState = GameState.MENU;
     public boolean gameActive = false;
-    public DIFFICULTY difficulty = DIFFICULTY.Easy;
+    public Difficulty difficulty = Difficulty.EASY;
 
     public Game() {
         Random r = new Random();
@@ -51,16 +53,16 @@ public class Game extends Canvas implements Runnable {
         serviceLocator.getAudioStream().startAudioStream();
         spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
 
-        GameSignals.GameQuit.connect(() -> {this.gameState = GAMESTATE.Menu; this.gameActive = false;});
+        GameSignals.GameQuit.connect(() -> {this.gameState = GameState.MENU; this.gameActive = false;});
         GameSignals.GameExited.connect(this::exitGame);
         GameSignals.GameStarted.connect(this::onGameStarted);
-        GameSignals.OpenPauseMenu.connect(() -> this.gameState = GAMESTATE.Paused);
-        GameSignals.GameResumed.connect(() -> this.gameState = GAMESTATE.Game);
-        GameSignals.OpenSettings.connect(() -> this.gameState = GAMESTATE.Settings);
-        GameSignals.OpenShop.connect(() -> this.gameState = GAMESTATE.Shop);
+        GameSignals.OpenPauseMenu.connect(() -> this.gameState = GameState.PAUSED);
+        GameSignals.GameResumed.connect(() -> this.gameState = GameState.GAME);
+        GameSignals.OpenSettings.connect(() -> this.gameState = GameState.SETTINGS);
+        GameSignals.OpenShop.connect(() -> this.gameState = GameState.SHOP);
         GameSignals.PlayerDied.connect(() -> {
             serviceLocator.getKeyInput().resetStates();
-            gameState = GAMESTATE.End;
+            gameState = GameState.END;
         });
     }
 
@@ -68,9 +70,9 @@ public class Game extends Canvas implements Runnable {
         serviceLocator.getGameHandler().clearAll();
         sleepThread(500);
         serviceLocator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, serviceLocator));
-        if (difficulty == DIFFICULTY.Easy) new EnemySlow(1, 1, ID.SlowEnemy, serviceLocator.getGameHandler());
+        if (difficulty == Difficulty.EASY) new EnemySlow(1, 1, ID.SlowEnemy, serviceLocator.getGameHandler());
         else new EnemyHard(1, 1, ID.HardEnemy, serviceLocator.getGameHandler());
-        gameState = GAMESTATE.Game;
+        gameState = GameState.GAME;
         gameActive = true;
     }
 
@@ -151,13 +153,13 @@ public class Game extends Canvas implements Runnable {
 
     private void tick() {
         switch (gameState) {
-            case Game -> {
+            case GAME -> {
                 serviceLocator.getHud().tick();
                 serviceLocator.getSpawn().tick();
                 serviceLocator.getGameHandler().tick();
             }
-            case Menu, Settings, End -> serviceLocator.getGameHandler().tickMenu();
-            case Paused, Shop -> serviceLocator.getKeyInput().resetStates();
+            case MENU, SETTINGS, END -> serviceLocator.getGameHandler().tickMenuParticles();
+            case PAUSED, SHOP -> serviceLocator.getKeyInput().resetStates();
         }
     }
 
@@ -174,17 +176,17 @@ public class Game extends Canvas implements Runnable {
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         switch (gameState) {
-            case Game -> {
+            case GAME -> {
                 serviceLocator.getStar().render(g);
                 serviceLocator.getGameHandler().render(g);
                 serviceLocator.getHud().render(g);
             }
-            case Menu, End, Settings, Shop -> {
+            case MENU, END, SETTINGS, SHOP -> {
                 serviceLocator.getStar().render(g);
                 serviceLocator.getGameHandler().render(g);
                 serviceLocator.getMenuManager().render(g);
             }
-            case Paused -> {
+            case PAUSED -> {
                 serviceLocator.getStar().render(g);
                 serviceLocator.getGameHandler().render(g);
                 serviceLocator.getHud().render(g);
@@ -198,18 +200,5 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    public enum GAMESTATE {
-        Menu,
-        Settings,
-        Game,
-        End,
-        Paused,
-        Shop,
-    }
-
-    public enum DIFFICULTY {
-        Easy,
-        Hard,
-    }
 
 }

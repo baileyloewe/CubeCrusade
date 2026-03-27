@@ -1,9 +1,11 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Entity;
+
 import java.awt.*;
 import java.awt.Point;
 
-public class Star extends GameObject{
+public class Star extends Entity {
 
     private final Point[] locations = new Point[26];
     /**

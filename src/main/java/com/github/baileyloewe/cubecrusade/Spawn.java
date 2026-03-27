@@ -1,6 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.enemies.*;
+import com.github.baileyloewe.cubecrusade.entities.enemies.*;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -74,12 +74,12 @@ public class Spawn {
                     }
                     case "Smart" -> new EnemySmart(x, y, ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer());
                     case "Fast" -> {
-                        if (serviceLocator.getGame().difficulty == Game.DIFFICULTY.Easy)
+                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
                             new EnemyFast(x, y, ID.FastEnemy, serviceLocator.getGameHandler());
                         else new EnemyFast(x, y, ID.FastEnemy, serviceLocator.getGameHandler(), 3.f, 3.f);
                     }
                     case "Slow" -> {
-                        if (serviceLocator.getGame().difficulty == Game.DIFFICULTY.Easy)
+                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
                             new EnemySlow(x, y, ID.SlowEnemy, serviceLocator.getGameHandler());
                         else new EnemyHard(x, y, ID.HardEnemy, serviceLocator.getGameHandler());
                     }

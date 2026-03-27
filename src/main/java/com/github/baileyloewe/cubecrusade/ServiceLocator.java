@@ -1,5 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Player;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 
 public class ServiceLocator {
@@ -30,8 +31,8 @@ public class ServiceLocator {
         return gameHandler;
     }
 
-    public void setGameHandler(GameHandler handler) {
-        this.gameHandler = handler;
+    public void setGameHandler(GameHandler gameHandler) {
+        this.gameHandler = gameHandler;
     }
 
     public Player getPlayer() {

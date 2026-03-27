@@ -1,12 +1,13 @@
-package com.github.baileyloewe.cubecrusade;
+package com.github.baileyloewe.cubecrusade.entities;
 
+import com.github.baileyloewe.cubecrusade.*;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Player extends GameObject {
-    private final GameHandler handler;
+public class Player extends Entity {
+    private final GameHandler gameHandler;
     private final float width;
     private final float height;
     private final BufferedImage playerImage;
@@ -17,7 +18,7 @@ public class Player extends GameObject {
 
     public Player(float x, float y, ID id, ServiceLocator serviceLocator) {
         super(x, y, id, serviceLocator.getGameHandler());
-        this.handler = serviceLocator.getGameHandler();
+        this.gameHandler = serviceLocator.getGameHandler();
         width = 64;
         height = 64;
         Sprite sprite = new Sprite(Game.spriteSheet);
@@ -46,10 +47,10 @@ public class Player extends GameObject {
     }
 
     private void collision() {
-        for (GameObject gameObject : handler.GameObjectLinkedList) {
-            if (!(gameObject.getID() == ID.Player) && !(gameObject.getID() == ID.MenuParticle)) {
+        for (Entity entity : gameHandler.getEntities()) {
+            if (!(entity.getID() == ID.Player) && !(entity.getID() == ID.MenuParticle)) {
                 // Collision check
-                if (getBounds().intersects(gameObject.getBounds()) && !damageTimeout) {
+                if (getBounds().intersects(entity.getBounds()) && !damageTimeout) {
                     GameSignals.healthLost.emit(-1);
                     health -= 1;
                     damageTimeout = true;
@@ -82,10 +83,5 @@ public class Player extends GameObject {
     @Override
     public void render(Graphics g) {
         g.drawImage(playerImage, (int) x, (int) y, null);
-    }
-
-    @Override
-    public Rectangle getBounds() {
-        return new Rectangle((int) x, (int) y, (int) width, (int) height);
     }
 }

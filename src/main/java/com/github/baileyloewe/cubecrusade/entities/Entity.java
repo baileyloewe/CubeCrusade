@@ -1,42 +1,45 @@
-package com.github.baileyloewe.cubecrusade;
+package com.github.baileyloewe.cubecrusade.entities;
+
+import com.github.baileyloewe.cubecrusade.Game;
+import com.github.baileyloewe.cubecrusade.GameHandler;
+import com.github.baileyloewe.cubecrusade.ID;
+import com.github.baileyloewe.cubecrusade.ServiceLocator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- Creates an abstract GameObject object for use in the game
+ Creates an abstract Entity object for use in the game
  */
-public abstract class GameObject
+public abstract class Entity
 {
     protected float x, y, width, height;
     protected ID id;
     protected float velocityX, velocityY;
-    protected GameHandler handler;
+    protected GameHandler gameHandler;
     protected BufferedImage image;
 
     /**
-     Creates a game object with an x-coordinate, y-coordinate, ID, and attaches it to the handler
+     Creates a game object with an x-coordinate, y-coordinate, ID, and attaches it to the gameHandler
      @param x          sets x-coordinate
      @param y          sets y-coordinate
      @param id         sets ID
-     @param handler    sets/attaches to handler
+     @param gameHandler   sets/attaches to gameHandler
      */
-    public GameObject(float x, float y, ID id, GameHandler handler)
+    public Entity(float x, float y, ID id, GameHandler gameHandler)
     {
         this.x = x;
         this.y = y;
         this.id = id;
-        this.handler = handler;
-        this.handler.addObject(this);
-
+        this.gameHandler = gameHandler;
+        this.gameHandler.addEntity(this);
     }
 
-    public GameObject(ServiceLocator serviceLocator)
+    public Entity(ServiceLocator serviceLocator)
     {
-        handler = serviceLocator.getGameHandler();
-        handler.addObject(this);
+        gameHandler = serviceLocator.getGameHandler();
+        gameHandler.addEntity(this);
     }
-
 
     /**
      Clamps the position of the object to the game bounds
@@ -50,7 +53,6 @@ public abstract class GameObject
             setVelocityY(getVelocityY() * -1);
         }
     }
-
 
      /**
       Normalizes a speed based on velocityX and velocityY to a target speed
@@ -72,11 +74,11 @@ public abstract class GameObject
         return new float[]{velocityX, velocityY};
     }
 
-
     public abstract void tick();
     public abstract void render(Graphics g);
-    public abstract Rectangle getBounds();
-
+    public Rectangle getBounds() {
+        return new Rectangle((int) x, (int) y, (int) width, (int) height);
+    }
 
     /**
      Sets x value, this is the x-position on the coordinate plane
@@ -86,7 +88,6 @@ public abstract class GameObject
     {
         this.x = x;
     }
-
 
     /**
      Sets y value, this is the y-position on the coordinate plane
@@ -137,7 +138,6 @@ public abstract class GameObject
         return id;
     }
 
-
     /**
      Sets the x velocity value, which is used to increment the y-position on the coordinate plane
      @param velocityX sets object's x velocity
@@ -146,7 +146,6 @@ public abstract class GameObject
     {
         this.velocityX = velocityX;
     }
-
 
     /**
      Returns x velocity value, which is used to increment the y-position on the coordinate plane
@@ -157,7 +156,6 @@ public abstract class GameObject
         return velocityX;
     }
 
-
     /**
      Sets the y velocity value, which is used to increment the y-position on the coordinate plane
      @param velocityY sets object's y velocity
@@ -166,7 +164,6 @@ public abstract class GameObject
     {
         this.velocityY = velocityY;
     }
-
 
     /**
      Returns y velocity value, which is used to increment the y-position on the coordinate plane
@@ -177,7 +174,6 @@ public abstract class GameObject
         return velocityY;
     }
 
-
     /**
      Returns the height value
      @return height
@@ -186,7 +182,6 @@ public abstract class GameObject
     {
         return height;
     }
-
 
     /**
      Sets the height value
@@ -197,7 +192,6 @@ public abstract class GameObject
         this.height = height;
     }
 
-
     /**
      Returns the width value
      @return float
@@ -207,7 +201,6 @@ public abstract class GameObject
         return width;
     }
 
-
     /**
      Sets the width value
      @param width sets object's width (x coordinate plane)
@@ -215,5 +208,9 @@ public abstract class GameObject
     public void setWidth(float width)
     {
         this.width = width;
+    }
+
+    public ID getId() {
+        return id;
     }
 }

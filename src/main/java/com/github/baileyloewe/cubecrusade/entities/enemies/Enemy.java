@@ -1,26 +1,29 @@
-package com.github.baileyloewe.cubecrusade;
+package com.github.baileyloewe.cubecrusade.entities.enemies;
+
+import com.github.baileyloewe.cubecrusade.*;
+import com.github.baileyloewe.cubecrusade.entities.Entity;
 
 import java.awt.*;
 import java.util.Random;
 
 /**
- * Creates an abstract Enemy class that extends the GameObject class
+ * Creates an abstract Enemy class that extends the Entity class
  */
-public abstract class Enemy extends GameObject {
+public abstract class Enemy extends Entity {
 
     protected final Random r;
     protected Color color;
 
     /**
-     * Creates an enemy object with an x-coordinate, y-coordinate, ID, and attaches it to the handler
+     * Creates an enemy object with an x-coordinate, y-coordinate, ID, and attaches it to the gameHandler
      *
      * @param x       sets x-coordinate
      * @param y       sets y-coordinate
      * @param id      sets ID
-     * @param handler sets/attaches to handler
+     * @param gameHandler sets/attaches to gameHandler
      */
-    public Enemy(float x, float y, ID id, GameHandler handler) {
-        super(x, y, id, handler);
+    public Enemy(float x, float y, ID id, GameHandler gameHandler) {
+        super(x, y, id, gameHandler);
         this.r = new Random();
     }
 
@@ -63,6 +66,4 @@ public abstract class Enemy extends GameObject {
     public void setColor(Color color) {
         this.color = color;
     }
-
-
 }
