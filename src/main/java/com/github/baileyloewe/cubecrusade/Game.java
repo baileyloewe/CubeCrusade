@@ -53,14 +53,14 @@ public class Game extends Canvas implements Runnable {
         serviceLocator.getAudioStream().startAudioStream();
         spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
 
-        GameSignals.GameQuit.connect(() -> {this.gameState = GameState.MENU; this.gameActive = false;});
-        GameSignals.GameExited.connect(this::exitGame);
-        GameSignals.GameStarted.connect(this::onGameStarted);
-        GameSignals.OpenPauseMenu.connect(() -> this.gameState = GameState.PAUSED);
-        GameSignals.GameResumed.connect(() -> this.gameState = GameState.GAME);
-        GameSignals.OpenSettings.connect(() -> this.gameState = GameState.SETTINGS);
-        GameSignals.OpenShop.connect(() -> this.gameState = GameState.SHOP);
-        GameSignals.PlayerDied.connect(() -> {
+        GameSignals.gameQuit.connect(() -> {this.gameState = GameState.MENU; this.gameActive = false;});
+        GameSignals.gameExited.connect(this::exitGame);
+        GameSignals.gameStarted.connect(this::onGameStarted);
+        GameSignals.openPauseMenu.connect(() -> this.gameState = GameState.PAUSED);
+        GameSignals.gameResumed.connect(() -> this.gameState = GameState.GAME);
+        GameSignals.openSettings.connect(() -> this.gameState = GameState.SETTINGS);
+        GameSignals.openShop.connect(() -> this.gameState = GameState.SHOP);
+        GameSignals.playerDied.connect(() -> {
             serviceLocator.getKeyInput().resetStates();
             gameState = GameState.END;
         });

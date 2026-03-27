@@ -14,7 +14,7 @@ public class GameHandler {
     CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<>();
 
     public GameHandler() {
-        GameSignals.GameQuit.connect(this::clearAll);
+        GameSignals.gameQuit.connect(this::clearAll);
     }
 
     public void tick() {

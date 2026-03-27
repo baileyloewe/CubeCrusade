@@ -63,7 +63,7 @@ public class Spawn {
              height = 250 / 12 * 9 * 2 + 32
 
             */
-            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getX() - 250, (int) serviceLocator.getPlayer().getY() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
+            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getxPos() - 250, (int) serviceLocator.getPlayer().getyPos() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
             Rectangle possibleEnemyPos = new Rectangle((int) x, (int) y, 16, 16);
 
             if (!PlayerPos.intersects(possibleEnemyPos)) {

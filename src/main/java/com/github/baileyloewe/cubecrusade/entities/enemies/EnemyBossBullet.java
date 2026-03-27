@@ -35,10 +35,10 @@ public class EnemyBossBullet extends Enemy {
 
     @Override
     public void tick() {
-        setX(getX() + getVelocityX());
-        setY(getY() + getVelocityY());
+        setxPos(getxPos() + getVelocityX());
+        setyPos(getyPos() + getVelocityY());
 
-        if (getY() >= Game.HEIGHT) {
+        if (getyPos() >= Game.HEIGHT) {
             gameHandler.removeEntity(this);
         }
     }

@@ -19,7 +19,7 @@ public class KeyInput extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if (keyCode == KeyEvent.VK_M) {
-            GameSignals.MuteToggled.emit();
+            GameSignals.muteToggled.emit();
         }
         switch (serviceLocator.getGame().gameState) {
             case GAME:
@@ -42,7 +42,7 @@ public class KeyInput extends KeyAdapter {
                         mostRecentXAxis = true;
                     }
                     case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> serviceLocator.getGame().gameState = GameState.PAUSED;
-                    case KeyEvent.VK_SPACE -> GameSignals.OpenShop.emit();
+                    case KeyEvent.VK_SPACE -> GameSignals.openShop.emit();
                 }
                 updateVelocity();
                 break;

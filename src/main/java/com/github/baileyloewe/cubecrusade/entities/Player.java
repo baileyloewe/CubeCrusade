@@ -6,44 +6,39 @@ import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Player extends Entity {
+public class Player extends MoveableEntity {
     private final GameHandler gameHandler;
-    private final float width;
-    private final float height;
+    private static final float width = 64;
+    private static final float height = 64;
     private final BufferedImage playerImage;
     private boolean damageTimeout = false;
     private long timerEnd;
-    private int health = 100;
-    private int maxHealth = 100;
+    private final HealthComponent healthComponent;
+    private final PositionComponent positionComponent;
+    private final MovementComponent movementComponent;
 
-    public Player(float x, float y, ID id, ServiceLocator serviceLocator) {
-        super(x, y, id, serviceLocator.getGameHandler());
+    public Player(float xPos, float yPos, ID id, ServiceLocator serviceLocator, float xVelocity, float yVelocity, float speed) {
+        super(xPos, yPos, width, height, id, serviceLocator.getGameHandler(), xVelocity, yVelocity, speed);
         this.gameHandler = serviceLocator.getGameHandler();
-        width = 64;
-        height = 64;
+
         Sprite sprite = new Sprite(Game.spriteSheet);
         playerImage = sprite.grabSprite(0, 0, (int) width, (int) height);
-        GameSignals.GameExited.connect(this::reset);
+        healthComponent = new HealthComponent(100);
+        healthComponent.died.connect(() -> GameSignals.playerDied.emit());
+        positionComponent = new PositionComponent(0,0 );
+
         GameSignals.baseHealthIncreased.connect(this::onBaseHealthIncreased);
-        GameSignals.healthRefilled.connect(() -> this.health = maxHealth);
+        GameSignals.healthRefilled.connect(() -> healthComponent.fullHeal());
     }
 
     @Override
     public void tick() {
+        super.tick();
         if (damageTimeout && (System.currentTimeMillis() > timerEnd)) {
             damageTimeout = false;
         }
-        x += velocityX;
-        y += velocityY;
-
-        x = Game.clamp(x, 0, Game.WIDTH - 64);
-        y = Game.clamp(y, 0, Game.HEIGHT - 64);
 
         collision();
-
-        if (health <= 0) {
-            GameSignals.PlayerDied.emit();
-        }
     }
 
     private void collision() {
@@ -51,8 +46,7 @@ public class Player extends Entity {
             if (!(entity.getID() == ID.Player) && !(entity.getID() == ID.MenuParticle)) {
                 // Collision check
                 if (getBounds().intersects(entity.getBounds()) && !damageTimeout) {
-                    GameSignals.healthLost.emit(-1);
-                    health -= 1;
+                    healthComponent.damage(1);
                     damageTimeout = true;
                     timerEnd = System.currentTimeMillis() + 8;
                 }
@@ -61,27 +55,19 @@ public class Player extends Entity {
     }
 
     public int getHealth() {
-        return health;
+        return healthComponent.currentHealth;
     }
 
     public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public void reset() {
-        health = 100;
-        maxHealth = 100;
-        setVelocityX(0);
-        setVelocityY(0);
+        return healthComponent.maxHealth;
     }
 
     public void onBaseHealthIncreased(int amount) {
-        health += amount;
-        maxHealth += amount;
+        healthComponent.increaseMaxHealth(amount);
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(playerImage, (int) x, (int) y, null);
+        g.drawImage(playerImage, (int) xPos, (int) yPos, null);
     }
 }

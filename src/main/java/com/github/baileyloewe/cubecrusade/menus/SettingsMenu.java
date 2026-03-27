@@ -32,11 +32,11 @@ public class SettingsMenu extends Menu {
             else serviceLocator.getGame().gameState = GameState.MENU;
         }
         else if (mouseOverItem(volumeUpBox, mouseX, mouseY)) {
-            GameSignals.AudioAdjusted.emit(5);
+            GameSignals.audioAdjusted.emit(5);
         } else if (mouseOverItem(volumeDownBox, mouseX, mouseY)) {
-            GameSignals.AudioAdjusted.emit(-5);
+            GameSignals.audioAdjusted.emit(-5);
         } else if (mouseOverItem(muteBox, mouseX, mouseY)) {
-            GameSignals.MuteToggled.emit();
+            GameSignals.muteToggled.emit();
         } else if (!serviceLocator.getGame().gameActive) {
             if (mouseOverItem(difficultyEasyBox, mouseX, mouseY)) {
                 serviceLocator.getGame().difficulty = Difficulty.EASY;

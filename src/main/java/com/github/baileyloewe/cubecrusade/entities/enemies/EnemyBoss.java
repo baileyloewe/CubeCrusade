@@ -22,7 +22,7 @@ public class EnemyBoss extends Enemy {
      */
     public EnemyBoss(ID id, GameHandler gameHandler) {
         super(Game.WIDTH / 2.f, -50, id, gameHandler);
-        setX(Game.WIDTH / 2.f - 32);
+        setxPos(Game.WIDTH / 2.f - 32);
         setWidth(128);
         setHeight(128);
         velocityX = velocityY = 2;
@@ -39,8 +39,8 @@ public class EnemyBoss extends Enemy {
         if (System.currentTimeMillis() > lifespan) {
             gameHandler.clearEnemies();
         }
-        setX(getX() + getVelocityX());
-        setY(getY() + getVelocityY());
+        setxPos(getxPos() + getVelocityX());
+        setyPos(getyPos() + getVelocityY());
 
         if (timer <= 0) {
             setVelocityY(0);
@@ -52,14 +52,14 @@ public class EnemyBoss extends Enemy {
             if (getVelocityX() == 0) setVelocityX(2);
             int spawn = r.nextInt(10);
             if (spawn == 0) {
-                gameHandler.addEntity(new EnemyBossBullet((int) x + (getWidth() / 2) - 8, (int) y + (getHeight() / 2) - 8, ID.BossEnemyBullet, gameHandler));
+                gameHandler.addEntity(new EnemyBossBullet((int) xPos + (getWidth() / 2) - 8, (int) yPos + (getHeight() / 2) - 8, ID.BossEnemyBullet, gameHandler));
             }
         }
 
-        if (getX() <= 100 || getX() >= Game.WIDTH - getWidth() - 50) {
+        if (getxPos() <= 100 || getxPos() >= Game.WIDTH - getWidth() - 50) {
             setVelocityX(getVelocityX() * -1);
         }
-        if (getY() <= -200 || getY() >= Game.HEIGHT - getHeight() + 150) {
+        if (getyPos() <= -200 || getyPos() >= Game.HEIGHT - getHeight() + 150) {
             setVelocityY(getVelocityY() * -1);
         }
     }

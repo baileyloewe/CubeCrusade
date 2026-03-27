@@ -14,10 +14,10 @@ public class Upgrade {
     private float playerCurrency;
 
     public Upgrade() {
-        GameSignals.GameStarted.connect(this::initializeValues);
-        GameSignals.HealthUpgradePurchased.connect(this::buyHealthUpgrade);
-        GameSignals.SpeedUpgradePurchased.connect(this::buySpeedUpgrade);
-        GameSignals.HealthRefillPurchased.connect(this::buyHealthRefill);
+        GameSignals.gameStarted.connect(this::initializeValues);
+        GameSignals.healthUpgradePurchased.connect(this::buyHealthUpgrade);
+        GameSignals.speedUpgradePurchased.connect(this::buySpeedUpgrade);
+        GameSignals.healthRefillPurchased.connect(this::buyHealthRefill);
     }
 
     public int getHealthUpgradeCount() {

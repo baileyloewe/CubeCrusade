@@ -37,8 +37,8 @@ public class EnemyHard extends Enemy {
      */
     @Override
     public void tick() {
-        setX(getX() + getVelocityX());
-        setY(getY() + getVelocityY());
+        setxPos(getxPos() + getVelocityX());
+        setyPos(getyPos() + getVelocityY());
 
         clampPosition();
     }
@@ -49,13 +49,13 @@ public class EnemyHard extends Enemy {
      */
     @Override
     public void clampPosition() {
-        if (getX() <= 0 || getX() >= Game.WIDTH - getWidth()) {
-            if (getX() <= 0) setVelocityX(r.nextInt(1, 6) * 1);
+        if (getxPos() <= 0 || getxPos() >= Game.WIDTH - getWidth()) {
+            if (getxPos() <= 0) setVelocityX(r.nextInt(1, 6) * 1);
             else setVelocityX(r.nextInt(1, 7) * -1);
         }
 
-        if (getY() <= 0 || getY() >= Game.HEIGHT - getHeight()) {
-            if (getY() <= 0) setVelocityY(r.nextInt(1, 6) * 1);
+        if (getyPos() <= 0 || getyPos() >= Game.HEIGHT - getHeight()) {
+            if (getyPos() <= 0) setVelocityY(r.nextInt(1, 6) * 1);
             else setVelocityY(r.nextInt(1, 7) * -1);
 
         }

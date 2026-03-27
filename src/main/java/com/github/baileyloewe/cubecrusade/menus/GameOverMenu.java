@@ -18,7 +18,7 @@ public class GameOverMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
-            GameSignals.GameQuit.emit();
+            GameSignals.gameQuit.emit();
             new MenuParticle(mouseX, mouseY, ID.MenuParticle, gameHandler);
         }
     }

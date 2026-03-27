@@ -37,14 +37,14 @@ public class MainMenu extends Menu {
         }
         if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
-            GameSignals.GameStarted.emit();
+            GameSignals.gameStarted.emit();
             menuParticleCount = 0;
         } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY))
         {
-            GameSignals.OpenSettings.emit();
+            GameSignals.openSettings.emit();
         } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
         {
-            GameSignals.GameExited.emit();
+            GameSignals.gameExited.emit();
         }
     }
 }

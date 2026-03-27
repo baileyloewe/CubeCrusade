@@ -49,8 +49,8 @@ public class MenuParticle extends Enemy {
     @Override
     public void render(Graphics g) {
         g.setColor(color);
-        g.fillRect((int) x,(int) y, (int) width, (int) height);
+        g.fillRect((int) xPos,(int) yPos, (int) width, (int) height);
         g.setColor(Color.black);
-        g.drawRect((int) x,(int) y, (int) width - 1, (int) height - 1);
+        g.drawRect((int) xPos,(int) yPos, (int) width - 1, (int) height - 1);
     }
 }

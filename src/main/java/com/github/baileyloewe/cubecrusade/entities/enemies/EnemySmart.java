@@ -44,13 +44,13 @@ public class EnemySmart extends Enemy {
      */
     @Override
     public void tick() {
-        setX(getX() + getVelocityX());
-        setY(getY() + getVelocityY());
+        setxPos(getxPos() + getVelocityX());
+        setyPos(getyPos() + getVelocityY());
 
-        float targetPlayerX = player.getX() + 8;
-        float targetPlayerY = player.getY() + 8;
-        float differenceX = getX() - targetPlayerX;
-        float differenceY = getY() - targetPlayerY;
+        float targetPlayerX = player.getxPos() + 8;
+        float targetPlayerY = player.getyPos() + 8;
+        float differenceX = getxPos() - targetPlayerX;
+        float differenceY = getyPos() - targetPlayerY;
         float angle = (float) Math.atan2(differenceX, differenceY);
 
         setVelocityY((float) -Math.cos(angle) + r.nextFloat(-.25f, .25f));
