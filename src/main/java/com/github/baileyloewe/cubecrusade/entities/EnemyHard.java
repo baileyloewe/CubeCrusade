@@ -22,11 +22,7 @@ public class EnemyHard extends Enemy {
         PositionComponent positionComponent = new PositionComponent(xPos, yPos);
         SizeComponent sizeComponent = new SizeComponent(32, 32);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialXVelocity, initialYVelocity, 1);
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, 96, 0);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, 96, 0);
         return new EnemyHard(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
-    }
-
-    @Override
-    public void tick() {
     }
 }

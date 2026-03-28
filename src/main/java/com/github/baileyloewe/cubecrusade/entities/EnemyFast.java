@@ -12,24 +12,17 @@ import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
  */
 public class EnemyFast extends Enemy {
 
-    private static final int initialXVelocity = 2 * Math.random() < .5 ? 1 : -1;
-    private static final int initialYVelocity = 2 * Math.random() < .5 ? 1 : -1;
-
     public EnemyFast(ID id, GameHandler gameHandler, PositionComponent positionComponent, SizeComponent sizeComponent, MovementComponent movementComponent, DisplayComponent displayComponent) {
         super(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
 
-    public static EnemyFast create(ID id, GameHandler gameHandler, float xPos, float yPos) {
+    public static EnemyFast create(ID id, GameHandler gameHandler, float xPos, float yPos, float xVelocity, float yVelocity) {
         PositionComponent positionComponent = new PositionComponent(xPos, yPos);
         SizeComponent sizeComponent = new SizeComponent(32, 32);
+        int initialXVelocity = xVelocity * Math.random() < .5 ? 1 : -1;
+        int initialYVelocity = yVelocity * Math.random() < .5 ? 1 : -1;
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialXVelocity, initialYVelocity, 2);
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, 128, 0);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, 128, 0);
         return new EnemyFast(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
-
-//    public EnemyFast(ID id, GameHandler gameHandler, float x, float y) {
-//        super(id, gameHandler, x, y, 16, 16, initialXVelocity, initialYVelocity, 2);
-//        this.gameHandler = gameHandler;
-//        displayComponent = new DisplayComponent(sizeComponent, 64, 0);
-//    }
 }

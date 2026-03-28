@@ -24,7 +24,7 @@ public class EnemyBoss extends Enemy {
         PositionComponent positionComponent = new PositionComponent(Game.WIDTH / 2.f - 32, -50);
         SizeComponent sizeComponent = new SizeComponent(128, 128);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, 2, 1, 2);
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, 0, 128);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, 0, 128);
         return new EnemyBoss(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
 
@@ -45,11 +45,11 @@ public class EnemyBoss extends Enemy {
             if (movementComponent.xVelocity == 0)movementComponent.xVelocity = 2;
             int spawn = r.nextInt(10);
             if (spawn == 0) {
-                gameHandler.addEntity(EnemyBossBullet.create(
+            EnemyBossBullet.create(
                     ID.BossEnemyBullet,
                     gameHandler,
                     positionComponent.xPos + ((float) sizeComponent.width / 2) - 8,
-                    positionComponent.yPos + ((float) sizeComponent.height / 2) - 8));
+                    positionComponent.yPos + ((float) sizeComponent.height / 2) - 8);
             }
         }
 

@@ -6,18 +6,18 @@ import com.github.baileyloewe.cubecrusade.signals.Signals;
 public class MovementComponent {
     public float xVelocity;
     public float yVelocity;
-    public float speed;
+    public float maxSeed;
     private final PositionComponent positionComponent;
     private final SizeComponent sizeComponent;
     public final Signals.EventSignal xAxisCollision = new Signals.EventSignal();
     public final Signals.EventSignal yAxisCollision = new Signals.EventSignal();
 
-    public MovementComponent(PositionComponent positionComponent, SizeComponent sizeComponent, float xVelocity, float yVelocity, float speed) {
+    public MovementComponent(PositionComponent positionComponent, SizeComponent sizeComponent, float xVelocity, float yVelocity, float maxSpeed) {
         this.positionComponent = positionComponent;
         this.sizeComponent = sizeComponent;
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
-        this.speed = speed;
+        this.maxSeed = maxSpeed;
     }
 
     public void tick() {
@@ -48,8 +48,8 @@ public class MovementComponent {
         if (xVelocity != 0 && yVelocity != 0)
         {
             float magnitude = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-            xVelocity = (xVelocity / magnitude) * Math.abs(speed);
-            yVelocity = (yVelocity / magnitude) * Math.abs(speed);
+            xVelocity = (xVelocity / magnitude) * Math.abs(maxSeed);
+            yVelocity = (yVelocity / magnitude) * Math.abs(maxSeed);
         }
     }
 }

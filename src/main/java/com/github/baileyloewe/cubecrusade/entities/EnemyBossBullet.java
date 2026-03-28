@@ -22,7 +22,7 @@ public class EnemyBossBullet extends Enemy {
         SizeComponent sizeComponent = new SizeComponent(32, 32);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, 2 * Math.random() < .5 ? 1 : -1, 2, 2);
         int[] rowCol = getImagePos();
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, rowCol[0], rowCol[1]);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, rowCol[0], rowCol[1]);
         return new EnemyBossBullet(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
 

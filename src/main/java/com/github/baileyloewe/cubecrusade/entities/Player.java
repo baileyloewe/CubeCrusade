@@ -15,9 +15,7 @@ public class Player extends Entity {
 
     public Player(ID id, GameHandler gameHandler, PositionComponent positionComponent, SizeComponent sizeComponent, MovementComponent movementComponent, DisplayComponent displayComponent) {
         super(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
-
         this.gameHandler = gameHandler;
-
         healthComponent = new HealthComponent(100);
         healthComponent.died.connect(() -> GameSignals.playerDied.emit());
         GameSignals.baseHealthIncreased.connect(this::onBaseHealthIncreased);
@@ -28,7 +26,7 @@ public class Player extends Entity {
         PositionComponent positionComponent = new PositionComponent(xPos, yPos);
         SizeComponent sizeComponent = new SizeComponent(64, 64);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent,0, 0, 2);
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, 0, 0);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, 0, 0);
         return new Player(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
 

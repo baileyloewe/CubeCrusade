@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.Serial;
 import java.util.Random;
 
+import static com.github.baileyloewe.cubecrusade.Spawn.EnemyType.SLOW;
+
 public class Game extends Canvas implements Runnable {
 
     /**
@@ -45,7 +47,7 @@ public class Game extends Canvas implements Runnable {
         this.addKeyListener(serviceLocator.getKeyInput());
         this.addMouseListener(serviceLocator.getMenuManager());
 
-        serviceLocator.getGameHandler().addEntity(MenuParticle.create(ID.MenuParticle, serviceLocator.getGameHandler(), r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16)));
+        MenuParticle.create(ID.MenuParticle, serviceLocator.getGameHandler(), r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16));
 
         serviceLocator.getAudioStream().startAudioStream();
         spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
@@ -68,23 +70,10 @@ public class Game extends Canvas implements Runnable {
         sleepThread(500);
         Player player = Player.create(ID.Player, serviceLocator.getGameHandler(), Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32);
         serviceLocator.setPlayer(player);
-        if (difficulty == Difficulty.EASY) EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), 1, 1);
+        if (difficulty == Difficulty.EASY) serviceLocator.getSpawn().spawnEnemy(SLOW);
         else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), 1, 1);
         gameState = GameState.GAME;
         gameActive = true;
-    }
-
-    /**
-     * Limits the value, val, to a min and max
-     *
-     * @param val value you are passing in to be clamped
-     * @param min value you want val to stay above
-     * @param max value you want val to stay below
-     * @return float
-     */
-    public static float clamp(float val, float min, float max) {
-        if (val >= max) return max;
-        else return Math.max(val, min);
     }
 
     public static void main(String[] args) {

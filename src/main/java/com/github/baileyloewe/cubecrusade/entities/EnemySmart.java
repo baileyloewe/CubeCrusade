@@ -26,7 +26,7 @@ public class EnemySmart extends Enemy {
         PositionComponent positionComponent = new PositionComponent(xPos, yPos);
         SizeComponent sizeComponent = new SizeComponent(32, 32);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialXVelocity, initialYVelocity, 1);
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, 160, 0);
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, 160, 0);
         return new EnemySmart(id, gameHandler, player, positionComponent, sizeComponent, movementComponent, displayComponent);
     }
 

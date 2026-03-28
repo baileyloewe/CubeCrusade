@@ -4,14 +4,14 @@ import com.github.baileyloewe.cubecrusade.entities.Entity;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * This class handles ticking, rendering, and adding/removing entities to the game
  */
 public class GameHandler {
 
-    CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<>();
+    CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
 
     public GameHandler() {
         GameSignals.gameQuit.connect(this::clearAll);
@@ -36,13 +36,7 @@ public class GameHandler {
     }
 
     public void clearEnemies() {
-        for (int i = 0; i < entities.size(); i++) {
-            Entity entity = entities.get(i);
-            if (entity.getID() != ID.Player) {
-                removeEntity(entity);
-                i--;
-            }
-        }
+        entities.removeIf(entity -> entity.getID() != ID.Player);
     }
 
     public void clearAll() {
@@ -57,7 +51,7 @@ public class GameHandler {
         entities.remove(entity);
     }
 
-    public CopyOnWriteArrayList<Entity> getEntities() {
+    public CopyOnWriteArraySet<Entity> getEntities() {
         return entities;
     }
 }

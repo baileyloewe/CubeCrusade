@@ -26,7 +26,7 @@ public class MenuParticle extends Entity {
         int dimension = r.nextInt(16,33);
         SizeComponent sizeComponent = new SizeComponent(dimension, dimension);
         MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, getRandomVelocity(), getRandomVelocity(), getRandomVelocity());
-        DisplayComponent displayComponent = new DisplayComponent(sizeComponent, positionComponent, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
 
         return new MenuParticle(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
     }

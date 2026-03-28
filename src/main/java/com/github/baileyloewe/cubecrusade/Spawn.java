@@ -13,11 +13,9 @@ import java.util.Random;
 public class Spawn {
     private final ServiceLocator serviceLocator;
     private final Random r = new Random();
-    private final Map<Integer, String> spawnMap = new HashMap<>();
+    private final Map<Integer, EnemyType> spawnMap = new HashMap<>();
 
-    /**
-     * Creates an instance of the spawn class
-     */
+
     public Spawn(ServiceLocator serviceLocator) {
         this.serviceLocator = serviceLocator;
         this.setSpawnMap();
@@ -35,12 +33,7 @@ public class Spawn {
         }
     }
 
-    /**
-     * Spawns an enemy away from the player and near the edges of the game space
-     *
-     * @param type this is a string such as "Slow", "Fast", "Smart", or "Boss"
-     */
-    public void spawnEnemy(String type) {
+    public void spawnEnemy(EnemyType enemyType) {
         boolean spawned = false;
         do {
             // Create an x and y var that is within the game width and height
@@ -67,18 +60,18 @@ public class Spawn {
             Rectangle possibleEnemyPos = new Rectangle((int) x, (int) y, 16, 16);
 
             if (!PlayerPos.intersects(possibleEnemyPos)) {
-                switch (type) {
-                    case "Boss" -> {
+                switch (enemyType) {
+                    case BOSS -> {
                         serviceLocator.getGameHandler().clearEnemies();
                         EnemyBoss.create(ID.BossEnemy, serviceLocator.getGameHandler());
                     }
-                    case "Smart" -> EnemySmart.create(ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer(), x, y);
-                    case "Fast" -> {
+                    case SMART -> EnemySmart.create(ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer(), x, y);
+                    case FAST -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
-                            EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y);
-                        else EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), 3.f, 3.f);
+                            EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 3.f, 3.f);
+                        else EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 2.f, 2.f);
                     }
-                    case "Slow" -> {
+                    case SLOW -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
                             EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), x, y);
                         else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), x, y);
@@ -96,11 +89,15 @@ public class Spawn {
      */
     public void setSpawnMap() {
         for (int level = 0; level < 10000; level++) {
-            if (level % 10 == 0) spawnMap.put(level, "Boss");
-            else if (level % 8 == 0) spawnMap.put(level, "Smart");
-            else if (level % 5 == 0) spawnMap.put(level, "Fast");
-            else if (level % 2 == 0) spawnMap.put(level, "Slow");
+            if (level % 10 == 0) spawnMap.put(level, EnemyType.BOSS);
+            else if (level % 8 == 0) spawnMap.put(level, EnemyType.SMART);
+            else if (level % 5 == 0) spawnMap.put(level, EnemyType.FAST);
+            else if (level % 2 == 0) spawnMap.put(level, EnemyType.SLOW);
         }
+    }
+
+    public enum EnemyType {
+        SLOW, FAST, SMART, BOSS
     }
 
 }
