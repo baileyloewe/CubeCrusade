@@ -1,7 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.enemies.EnemyHard;
-import com.github.baileyloewe.cubecrusade.enemies.EnemySlow;
+import com.github.baileyloewe.cubecrusade.entities.*;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -10,6 +9,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.Serial;
 import java.util.Random;
+
+import static com.github.baileyloewe.cubecrusade.Spawn.EnemyType.SLOW;
 
 public class Game extends Canvas implements Runnable {
 
@@ -20,67 +21,59 @@ public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1550691097823471818L;
     private Thread thread;
     private boolean running = false;
-    private final Mediator mediator;
+    private final ServiceLocator serviceLocator;
 
     public static final int WIDTH = 1224, HEIGHT = WIDTH / 12 * 9;
     public static BufferedImage spriteSheet;
 
-    public GAMESTATE gameState = GAMESTATE.Menu;
+    public GameState gameState = GameState.MENU;
     public boolean gameActive = false;
-    public DIFFICULTY difficulty = DIFFICULTY.Easy;
+    public Difficulty difficulty = Difficulty.EASY;
 
     public Game() {
         Random r = new Random();
-        mediator = new Mediator();
-        mediator.setGame(this);
-        mediator.setGameHandler(new GameHandler());
-        mediator.setUpgrade(new Upgrade());
-        mediator.setHud(new HUD(mediator));
-        mediator.setSpawn(new Spawn(mediator));
-        mediator.setStar(new Star(mediator));
-        mediator.setKeyInput(new KeyInput(mediator));
-        mediator.setAudioStream(new AudioStream(this));
-        mediator.setMenuManager(new MenuManager(mediator));
-        mediator.setSpriteLoader(new SpriteLoader(mediator));
+        serviceLocator = new ServiceLocator();
+        serviceLocator.setGame(this);
+        serviceLocator.setGameHandler(new GameHandler());
+        serviceLocator.setUpgrade(new Upgrade());
+        serviceLocator.setHud(new HUD(serviceLocator));
+        serviceLocator.setSpawn(new Spawn(serviceLocator));
+        serviceLocator.setStar(new Stars(serviceLocator.getGameHandler()));
+        serviceLocator.setKeyInput(new KeyInput(serviceLocator));
+        serviceLocator.setAudioStream(new AudioStream(this));
+        serviceLocator.setMenuManager(new MenuManager(serviceLocator));
+        serviceLocator.setSpriteLoader(new SpriteLoader(serviceLocator));
         new Window(WIDTH, HEIGHT, "Cube Crusade", this);
-        this.addKeyListener(mediator.getKeyInput());
-        this.addMouseListener(mediator.getMenuManager());
+        this.addKeyListener(serviceLocator.getKeyInput());
+        this.addMouseListener(serviceLocator.getMenuManager());
 
-        new MenuParticle(r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16), ID.MenuParticle, mediator.getGameHandler());
+        MenuParticle.create(ID.MenuParticle, serviceLocator.getGameHandler(), r.nextInt(Game.WIDTH - 16), r.nextInt(Game.HEIGHT - 16));
 
-        mediator.getAudioStream().startAudioStream();
-        spriteSheet = mediator.getSpriteLoader().loadImage("/Sprites.png");
+        serviceLocator.getAudioStream().startAudioStream();
+        spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
 
-        GameSignals.GameQuit.connect(() -> {this.gameState = GAMESTATE.Menu; this.gameActive = false;});
-        GameSignals.GameExited.connect(this::exitGame);
-        GameSignals.GameStarted.connect(this::onGameStarted);
-        GameSignals.OpenPauseMenu.connect(() -> this.gameState = GAMESTATE.Paused);
-        GameSignals.GameResumed.connect(() -> this.gameState = GAMESTATE.Game);
-        GameSignals.OpenSettings.connect(() -> this.gameState = GAMESTATE.Settings);
-        GameSignals.OpenShop.connect(() -> this.gameState = GAMESTATE.Shop);
+        GameSignals.gameQuit.connect(() -> {this.gameState = GameState.MENU; this.gameActive = false;});
+        GameSignals.gameExited.connect(this::exitGame);
+        GameSignals.gameStarted.connect(this::onGameStarted);
+        GameSignals.openPauseMenu.connect(() -> this.gameState = GameState.PAUSED);
+        GameSignals.gameResumed.connect(() -> this.gameState = GameState.GAME);
+        GameSignals.openSettings.connect(() -> this.gameState = GameState.SETTINGS);
+        GameSignals.openShop.connect(() -> this.gameState = GameState.SHOP);
+        GameSignals.playerDied.connect(() -> {
+            serviceLocator.getKeyInput().resetStates();
+            gameState = GameState.END;
+        });
     }
 
     public void onGameStarted() {
-        mediator.getGameHandler().clearAll();
+        serviceLocator.getGameHandler().clearAll();
         sleepThread(500);
-        mediator.setPlayer(new Player(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32, ID.Player, mediator));
-        if (difficulty == DIFFICULTY.Easy) new EnemySlow(1, 1, ID.SlowEnemy, mediator.getGameHandler());
-        else new EnemyHard(1, 1, ID.HardEnemy, mediator.getGameHandler());
-        gameState = GAMESTATE.Game;
+        Player player = Player.create(ID.Player, serviceLocator.getGameHandler(), Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32);
+        serviceLocator.setPlayer(player);
+        if (difficulty == Difficulty.EASY) serviceLocator.getSpawn().spawnEnemy(SLOW);
+        else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), 1, 1);
+        gameState = GameState.GAME;
         gameActive = true;
-    }
-
-    /**
-     * Limits the value, val, to a min and max
-     *
-     * @param val value you are passing in to be clamped
-     * @param min value you want val to stay above
-     * @param max value you want val to stay below
-     * @return float
-     */
-    public static float clamp(float val, float min, float max) {
-        if (val >= max) return max;
-        else return Math.max(val, min);
     }
 
     public static void main(String[] args) {
@@ -91,8 +84,8 @@ public class Game extends Canvas implements Runnable {
      * Used to close audio streams before exiting the game
      */
     public void exitGame() {
-        mediator.getAudioStream().closeAudioStream();
-        System.exit(1);
+        serviceLocator.getAudioStream().closeAudioStream();
+        System.exit(0);
     }
 
     public void sleepThread(int time) {
@@ -147,17 +140,13 @@ public class Game extends Canvas implements Runnable {
 
     private void tick() {
         switch (gameState) {
-            case Game -> {
-                mediator.getHud().tick();
-                mediator.getSpawn().tick();
-                mediator.getGameHandler().tick();
-                if (mediator.getPlayer().getHealth() <= 0) {
-                    mediator.getKeyInput().resetStates();
-                    gameState = GAMESTATE.End;
-                }
+            case GAME -> {
+                serviceLocator.getHud().tick();
+                serviceLocator.getSpawn().tick();
+                serviceLocator.getGameHandler().tick();
             }
-            case Menu, Settings, End -> mediator.getGameHandler().tickMenu();
-            case Paused, Shop -> mediator.getKeyInput().resetStates();
+            case MENU, SETTINGS, END -> serviceLocator.getGameHandler().tickMenuParticles();
+            case PAUSED, SHOP -> serviceLocator.getKeyInput().resetStates();
         }
     }
 
@@ -174,21 +163,21 @@ public class Game extends Canvas implements Runnable {
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         switch (gameState) {
-            case Game -> {
-                mediator.getStar().render(g);
-                mediator.getGameHandler().render(g);
-                mediator.getHud().render(g);
+            case GAME -> {
+                serviceLocator.getStar().render(g);
+                serviceLocator.getGameHandler().render(g);
+                serviceLocator.getHud().render(g);
             }
-            case Menu, End, Settings, Shop -> {
-                mediator.getStar().render(g);
-                mediator.getGameHandler().render(g);
-                mediator.getMenuManager().render(g);
+            case MENU, END, SETTINGS, SHOP -> {
+                serviceLocator.getStar().render(g);
+                serviceLocator.getGameHandler().render(g);
+                serviceLocator.getMenuManager().render(g);
             }
-            case Paused -> {
-                mediator.getStar().render(g);
-                mediator.getGameHandler().render(g);
-                mediator.getHud().render(g);
-                mediator.getMenuManager().render(g);
+            case PAUSED -> {
+                serviceLocator.getStar().render(g);
+                serviceLocator.getGameHandler().render(g);
+                serviceLocator.getHud().render(g);
+                serviceLocator.getMenuManager().render(g);
             }
             default -> {
             }
@@ -198,18 +187,5 @@ public class Game extends Canvas implements Runnable {
         bs.show();
     }
 
-    public enum GAMESTATE {
-        Menu,
-        Settings,
-        Game,
-        End,
-        Paused,
-        Shop,
-    }
-
-    public enum DIFFICULTY {
-        Easy,
-        Hard,
-    }
 
 }

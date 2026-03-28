@@ -28,11 +28,11 @@ public class PauseMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(resumeBox, mouseX, mouseY)) {
-            GameSignals.GameResumed.emit();
+            GameSignals.gameResumed.emit();
         } else if (mouseOverItem(settingsBox, mouseX, mouseY)) {
-            GameSignals.OpenSettings.emit();
+            GameSignals.openSettings.emit();
         } else if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
-            GameSignals.GameQuit.emit();
+            GameSignals.gameQuit.emit();
         }
     }
 }

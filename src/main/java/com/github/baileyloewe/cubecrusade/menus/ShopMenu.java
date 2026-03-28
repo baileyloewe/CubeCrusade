@@ -41,15 +41,15 @@ public class ShopMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(shopUpgradeHealthBox, mouseX, mouseY)) {
-            GameSignals.HealthUpgradePurchased.emit();
+            GameSignals.healthUpgradePurchased.emit();
         } else if (mouseOverItem(shopUpgradeSpeedBox, mouseX, mouseY)) {
             upgrade.buySpeedUpgrade();
-            GameSignals.SpeedUpgradePurchased.emit();
+            GameSignals.speedUpgradePurchased.emit();
         } else if (mouseOverItem(shopRefillHealthBox, mouseX, mouseY)) {
             upgrade.buyHealthRefill();
-            GameSignals.HealthRefillPurchased.emit();
+            GameSignals.healthRefillPurchased.emit();
         } else if (mouseOverItem(shopBackBox, mouseX, mouseY)) {
-            GameSignals.GameResumed.emit();
+            GameSignals.gameResumed.emit();
         }
     }
 

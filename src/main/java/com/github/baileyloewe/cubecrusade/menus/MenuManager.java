@@ -1,17 +1,14 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
-import com.github.baileyloewe.cubecrusade.Game;
-import com.github.baileyloewe.cubecrusade.GameHandler;
-import com.github.baileyloewe.cubecrusade.Mediator;
-import com.github.baileyloewe.cubecrusade.Upgrade;
+import com.github.baileyloewe.cubecrusade.*;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class MenuManager extends MouseAdapter {
-    protected final GameHandler handler;
-    protected final Mediator mediator;
+    protected final GameHandler gameHandler;
+    protected final ServiceLocator serviceLocator;
     protected final Upgrade upgrade;
     protected final int centeredX = Game.WIDTH / 2;
     protected final int centeredY = Game.HEIGHT / 2 - 16;
@@ -23,22 +20,22 @@ public class MenuManager extends MouseAdapter {
     public SettingsMenu settingsMenu;
     public ShopMenu shopMenu;
 
-    public MenuManager(Mediator mediator) {
-        this.mediator = mediator;
-        this.handler = mediator.getGameHandler();
-        this.upgrade = mediator.getUpgrade();
+    public MenuManager(ServiceLocator serviceLocator) {
+        this.serviceLocator = serviceLocator;
+        this.gameHandler = serviceLocator.getGameHandler();
+        this.upgrade = serviceLocator.getUpgrade();
         this.init();
     }
 
     public void mousePressed(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
-        switch (mediator.getGame().gameState) {
-            case Menu -> mainMenu.interact(mouseX, mouseY);
-            case Settings -> settingsMenu.interact(mouseX, mouseY);
-            case Paused -> pauseMenu.interact(mouseX, mouseY);
-            case Shop -> shopMenu.interact(mouseX, mouseY);
-            case End -> gameOverMenu.interact(mouseX, mouseY);
+        switch (serviceLocator.getGame().gameState) {
+            case MENU -> mainMenu.interact(mouseX, mouseY);
+            case SETTINGS -> settingsMenu.interact(mouseX, mouseY);
+            case PAUSED -> pauseMenu.interact(mouseX, mouseY);
+            case SHOP -> shopMenu.interact(mouseX, mouseY);
+            case END -> gameOverMenu.interact(mouseX, mouseY);
             default -> {
             }
         }
@@ -54,12 +51,12 @@ public class MenuManager extends MouseAdapter {
 
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
-        switch (mediator.getGame().gameState) {
-            case Menu -> mainMenu.render(g);
-            case Settings -> settingsMenu.render(g);
-            case Paused -> pauseMenu.render(g);
-            case Shop -> shopMenu.render(g);
-            case End -> gameOverMenu.render(g);
+        switch (serviceLocator.getGame().gameState) {
+            case MENU -> mainMenu.render(g);
+            case SETTINGS -> settingsMenu.render(g);
+            case PAUSED -> pauseMenu.render(g);
+            case SHOP -> shopMenu.render(g);
+            case END -> gameOverMenu.render(g);
         }
     }
 }
