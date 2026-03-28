@@ -1,6 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.enemies.*;
+import com.github.baileyloewe.cubecrusade.entities.*;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,15 +11,13 @@ import java.util.Random;
  * Handles spawning enemies based on level/score
  */
 public class Spawn {
-    private final Mediator mediator;
+    private final ServiceLocator serviceLocator;
     private final Random r = new Random();
-    private final Map<Integer, String> spawnMap = new HashMap<>();
+    private final Map<Integer, EnemyType> spawnMap = new HashMap<>();
 
-    /**
-     * Creates an instance of the spawn class
-     */
-    public Spawn(Mediator mediator) {
-        this.mediator = mediator;
+
+    public Spawn(ServiceLocator serviceLocator) {
+        this.serviceLocator = serviceLocator;
         this.setSpawnMap();
     }
 
@@ -27,20 +25,15 @@ public class Spawn {
      * Checks score, sets level based on score, and spawns enemies depending on the level
      */
     public void tick() {
-        if (mediator.getUpgrade().getScore() % 1000 == 0) {
-            mediator.getUpgrade().setLevel(mediator.getUpgrade().getLevel() + 1);
+        if (serviceLocator.getUpgrade().getScore() % 1000 == 0) {
+            serviceLocator.getUpgrade().setLevel(serviceLocator.getUpgrade().getLevel() + 1);
 
-            if (spawnMap.get(mediator.getUpgrade().getLevel()) != null)
-                spawnEnemy(spawnMap.get(mediator.getUpgrade().getLevel()));
+            if (spawnMap.get(serviceLocator.getUpgrade().getLevel()) != null)
+                spawnEnemy(spawnMap.get(serviceLocator.getUpgrade().getLevel()));
         }
     }
 
-    /**
-     * Spawns an enemy away from the player and near the edges of the game space
-     *
-     * @param type this is a string such as "Slow", "Fast", "Smart", or "Boss"
-     */
-    public void spawnEnemy(String type) {
+    public void spawnEnemy(EnemyType enemyType) {
         boolean spawned = false;
         do {
             // Create an x and y var that is within the game width and height
@@ -63,25 +56,25 @@ public class Spawn {
              height = 250 / 12 * 9 * 2 + 32
 
             */
-            Rectangle PlayerPos = new Rectangle((int) mediator.getPlayer().getX() - 250, (int) mediator.getPlayer().getY() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
+            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getXPos() - 250, (int) serviceLocator.getPlayer().getYPos() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
             Rectangle possibleEnemyPos = new Rectangle((int) x, (int) y, 16, 16);
 
             if (!PlayerPos.intersects(possibleEnemyPos)) {
-                switch (type) {
-                    case "Boss" -> {
-                        mediator.getGameHandler().clearEnemies();
-                        new EnemyBoss(ID.BossEnemy, mediator.getGameHandler());
+                switch (enemyType) {
+                    case BOSS -> {
+                        serviceLocator.getGameHandler().clearEnemies();
+                        EnemyBoss.create(ID.BossEnemy, serviceLocator.getGameHandler());
                     }
-                    case "Smart" -> new EnemySmart(x, y, ID.SmartEnemy, mediator.getGameHandler(), mediator.getPlayer());
-                    case "Fast" -> {
-                        if (mediator.getGame().difficulty == Game.DIFFICULTY.Easy)
-                            new EnemyFast(x, y, ID.FastEnemy, mediator.getGameHandler());
-                        else new EnemyFast(x, y, ID.FastEnemy, mediator.getGameHandler(), 3.f, 3.f);
+                    case SMART -> EnemySmart.create(ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer(), x, y);
+                    case FAST -> {
+                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
+                            EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 3.f, 3.f);
+                        else EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 2.f, 2.f);
                     }
-                    case "Slow" -> {
-                        if (mediator.getGame().difficulty == Game.DIFFICULTY.Easy)
-                            new EnemySlow(x, y, ID.SlowEnemy, mediator.getGameHandler());
-                        else new EnemyHard(x, y, ID.HardEnemy, mediator.getGameHandler());
+                    case SLOW -> {
+                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
+                            EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), x, y);
+                        else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), x, y);
                     }
                     default -> {
                     }
@@ -96,11 +89,15 @@ public class Spawn {
      */
     public void setSpawnMap() {
         for (int level = 0; level < 10000; level++) {
-            if (level % 10 == 0) spawnMap.put(level, "Boss");
-            else if (level % 8 == 0) spawnMap.put(level, "Smart");
-            else if (level % 5 == 0) spawnMap.put(level, "Fast");
-            else if (level % 2 == 0) spawnMap.put(level, "Slow");
+            if (level % 10 == 0) spawnMap.put(level, EnemyType.BOSS);
+            else if (level % 8 == 0) spawnMap.put(level, EnemyType.SMART);
+            else if (level % 5 == 0) spawnMap.put(level, EnemyType.FAST);
+            else if (level % 2 == 0) spawnMap.put(level, EnemyType.SLOW);
         }
+    }
+
+    public enum EnemyType {
+        SLOW, FAST, SMART, BOSS
     }
 
 }

@@ -1,21 +1,18 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
-import com.github.baileyloewe.cubecrusade.GameHandler;
-import com.github.baileyloewe.cubecrusade.Mediator;
-import com.github.baileyloewe.cubecrusade.MenuBoxItem;
-import com.github.baileyloewe.cubecrusade.Upgrade;
+import com.github.baileyloewe.cubecrusade.*;
 
 public abstract class Menu {
     protected MenuManager mm;
-    protected Mediator mediator;
-    protected GameHandler handler;
+    protected ServiceLocator serviceLocator;
+    protected GameHandler gameHandler;
     protected Upgrade upgrade;
     protected int centeredX, centeredY;
 
     public Menu(MenuManager mm) {
         this.mm = mm;
-        this.mediator = mm.mediator;
-        this.handler = mm.handler;
+        this.serviceLocator = mm.serviceLocator;
+        this.gameHandler = mm.gameHandler;
         this.upgrade = mm.upgrade;
         this.centeredX = mm.centeredX;
         this.centeredY = mm.centeredY;

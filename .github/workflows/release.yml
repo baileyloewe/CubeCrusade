@@ -1,0 +1,33 @@
+name: Build and release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: set version from tag
+        run: mvn versions:set -DnewVersion=${GITHUB_REF_NAME#v}
+
+      - name: setup JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+          cache: 'maven'
+          architecture: x64
+
+      - name: maven build
+        run: mvn package
+
+      - name: create release
+        uses: softprops/action-gh-release@v2.5.0
+        with:
+          files: target/*.jar
+

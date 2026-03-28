@@ -1,28 +1,30 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Player;
+
 import java.awt.*;
 
 /**
  * The HUD, or Heads Up Display, tracks and draws the player health, the score, and the current level
  */
 public class HUD {
-    private final Mediator mediator;
+    private final ServiceLocator serviceLocator;
     private Player player;
     private Upgrade upgrade;
 
     private int greenValue = 255;
     private int redValue = 55;
 
-    public HUD(Mediator mediator) {
-        this.mediator = mediator;
+    public HUD(ServiceLocator serviceLocator) {
+        this.serviceLocator = serviceLocator;
 
     }
     /**
      * Clamps health to 0 - 100, updates health value colors, and increments the score
      */
     public void tick() {
-        player = mediator.getPlayer();
-        upgrade = mediator.getUpgrade();
+        player = serviceLocator.getPlayer();
+        upgrade = serviceLocator.getUpgrade();
 
         int health = player.getHealth();
         int maxHealth = player.getMaxHealth();
@@ -41,8 +43,8 @@ public class HUD {
      * @param g Graphics object
      */
     public void render(Graphics g) {
-        player = mediator.getPlayer();
-        upgrade = mediator.getUpgrade();
+        player = serviceLocator.getPlayer();
+        upgrade = serviceLocator.getUpgrade();
 
         // Set background color of health & draw
         g.setColor(Color.white);

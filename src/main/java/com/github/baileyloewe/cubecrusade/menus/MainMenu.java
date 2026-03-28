@@ -3,7 +3,7 @@ package com.github.baileyloewe.cubecrusade.menus;
 import com.github.baileyloewe.cubecrusade.GraphicsUtil;
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
-import com.github.baileyloewe.cubecrusade.MenuParticle;
+import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
@@ -32,19 +32,19 @@ public class MainMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (menuParticleCount < 25) {
-            new MenuParticle(mouseX, mouseY, ID.MenuParticle, handler);
+            MenuParticle.create(ID.MenuParticle, gameHandler, mouseX, mouseY);
             menuParticleCount++;
         }
         if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
-            GameSignals.GameStarted.emit();
+            GameSignals.gameStarted.emit();
             menuParticleCount = 0;
         } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY))
         {
-            GameSignals.OpenSettings.emit();
+            GameSignals.openSettings.emit();
         } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
         {
-            GameSignals.GameExited.emit();
+            GameSignals.gameExited.emit();
         }
     }
 }

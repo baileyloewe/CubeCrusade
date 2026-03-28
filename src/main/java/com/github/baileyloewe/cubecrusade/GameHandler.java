@@ -1,85 +1,57 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Entity;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * This class handlers ticking and rendering all game objects
+ * This class handles ticking, rendering, and adding/removing entities to the game
  */
 public class GameHandler {
 
-    CopyOnWriteArrayList<GameObject> GameObjectLinkedList = new CopyOnWriteArrayList<>();
+    CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
 
     public GameHandler() {
-        GameSignals.GameQuit.connect(this::clearAll);
+        GameSignals.gameQuit.connect(this::clearAll);
     }
 
-    /**
-     * Loops through the GameObjectLinkedList, ticking each item
-     */
     public void tick() {
-        for (GameObject gameObject : GameObjectLinkedList) {
-            gameObject.tick();
+        for (Entity entity : entities) {
+            entity.tick();
         }
     }
 
-
-    /**
-     * Loops through the GameObjectLinkedList, ticking menu particles
-     */
-    public void tickMenu() {
-        for (GameObject gameObject : GameObjectLinkedList) {
-            if (gameObject.id == ID.MenuParticle) gameObject.tick();
+    public void tickMenuParticles() {
+        for (Entity entity : entities) {
+            if (entity.getID() == ID.MenuParticle) entity.tick();
         }
     }
 
-
-    /**
-     * Loops through the GameObjectLinkedList, rendering each item
-     */
     public void render(Graphics g) {
-        for (GameObject gameObject : GameObjectLinkedList) {
-            gameObject.render(g);
+        for (Entity entity : entities) {
+            entity.render(g);
         }
     }
 
-
-    /**
-     * Clears all non-player game objects (for now)
-     */
     public void clearEnemies() {
-        for (int i = 0; i < GameObjectLinkedList.size(); i++) {
-            GameObject gameObject = GameObjectLinkedList.get(i);
-            if (gameObject.id != ID.Player) {
-                removeObject(gameObject);
-                i--;
-            }
-        }
+        entities.removeIf(entity -> entity.getID() != ID.Player);
     }
 
-
-    /**
-     * Clears all objects from the GameObjectLinkedList
-     */
     public void clearAll() {
-        GameObjectLinkedList.clear();
+        entities.clear();
     }
 
-
-    /**
-     * Adds a GameObject (object) to the GameObjectLinkedList
-     */
-    public void addObject(GameObject object) {
-        GameObjectLinkedList.add(object);
+    public void addEntity(Entity entity) {
+        entities.add(entity);
     }
 
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
 
-    /**
-     * Removes a GameObject (object) from the GameObjectLinkedList
-     */
-    public void removeObject(GameObject object) {
-        GameObjectLinkedList.remove(object);
+    public CopyOnWriteArraySet<Entity> getEntities() {
+        return entities;
     }
 }
