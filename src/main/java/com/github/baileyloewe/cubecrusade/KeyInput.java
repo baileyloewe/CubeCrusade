@@ -1,6 +1,5 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.entities.Player;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.event.KeyAdapter;
@@ -8,8 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class KeyInput extends KeyAdapter {
     private final ServiceLocator serviceLocator;
-    private boolean wPressed, aPressed, sPressed, dPressed;
-    private boolean mostRecentXAxis, mostRecentYaxis;
+    public int wPressed, aPressed, sPressed, dPressed;
 
     public KeyInput(ServiceLocator serviceLocator) {
         this.serviceLocator = serviceLocator;
@@ -26,31 +24,26 @@ public class KeyInput extends KeyAdapter {
                 switch (keyCode)
                 {
                     case KeyEvent.VK_W -> {
-                        wPressed = true;
-                        mostRecentYaxis = false;
+                        wPressed = 1;
                     }
                     case KeyEvent.VK_A -> {
-                        aPressed = true;
-                        mostRecentXAxis = false;
+                        aPressed = 1;
                     }
                     case KeyEvent.VK_S -> {
-                        sPressed = true;
-                        mostRecentYaxis = true;
+                        sPressed = 1;
                     }
                     case KeyEvent.VK_D -> {
-                        dPressed = true;
-                        mostRecentXAxis = true;
+                        dPressed = 1;
                     }
-                    case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> serviceLocator.getGame().gameState = GameState.PAUSED;
+                    case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> GameSignals.openPauseMenu.emit();
                     case KeyEvent.VK_SPACE -> GameSignals.openShop.emit();
                 }
-                updateVelocity();
                 break;
             case SHOP:
-                if (keyCode == KeyEvent.VK_SPACE) serviceLocator.getGame().gameState = GameState.GAME;
+                if (keyCode == KeyEvent.VK_SPACE || keyCode == KeyEvent.VK_ESCAPE) GameSignals.gameResumed.emit();
                 break;
             case PAUSED:
-                if (keyCode == KeyEvent.VK_P || keyCode == KeyEvent.VK_ESCAPE) serviceLocator.getGame().gameState = GameState.GAME;
+                if (keyCode == KeyEvent.VK_P || keyCode == KeyEvent.VK_ESCAPE) GameSignals.gameResumed.emit();
                 break;
             default:
                 break;
@@ -62,44 +55,19 @@ public class KeyInput extends KeyAdapter {
         if (serviceLocator.getGame().gameState == GameState.GAME) {
             int keyCode = e.getKeyCode();
             if (keyCode == KeyEvent.VK_W) {
-                wPressed = false;
+                wPressed = 0;
             } else if (keyCode == KeyEvent.VK_A) {
-                aPressed = false;
+                aPressed = 0;
             } else if (keyCode == KeyEvent.VK_S) {
-                sPressed = false;
+                sPressed = 0;
             } else if (keyCode == KeyEvent.VK_D) {
-                dPressed = false;
+                dPressed = 0;
             }
-            updateVelocity();
         }
-    }
-
-    public void updateVelocity() {
-        float velocityX = 0;
-        float velocityY = 0;
-
-        Upgrade upgrade = serviceLocator.getUpgrade();
-        Player player = serviceLocator.getPlayer();
-
-        if (wPressed) velocityY = upgrade.getCurrentSpeed() * -1;
-        if (sPressed) velocityY = upgrade.getCurrentSpeed();
-        if (aPressed) velocityX = upgrade.getCurrentSpeed() * -1;
-        if (dPressed) velocityX = upgrade.getCurrentSpeed();
-
-        if (wPressed && sPressed) {
-            if (!mostRecentYaxis) velocityY = upgrade.getCurrentSpeed() * -1;
-        } else if (aPressed && dPressed) {
-            if (!mostRecentXAxis) velocityX = upgrade.getCurrentSpeed() * -1;
-        }
-
-        player.setXVelocity(velocityX);
-        player.setYVelocity(velocityY);
     }
 
     public void resetStates() {
-        wPressed = aPressed = sPressed = dPressed = mostRecentXAxis = mostRecentYaxis = false;
-        serviceLocator.getPlayer().setXVelocity(0);
-        serviceLocator.getPlayer().setYVelocity(0);
+        wPressed = aPressed = sPressed = dPressed = 0;
     }
 
 }

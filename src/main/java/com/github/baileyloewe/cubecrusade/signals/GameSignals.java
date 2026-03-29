@@ -1,6 +1,8 @@
 package com.github.baileyloewe.cubecrusade.signals;
-import com.github.baileyloewe.cubecrusade.signals.Signals.Signal;
+
+import com.github.baileyloewe.cubecrusade.entities.Entity;
 import com.github.baileyloewe.cubecrusade.signals.Signals.EventSignal;
+import com.github.baileyloewe.cubecrusade.signals.Signals.Signal;
 
 public class GameSignals {
     // Audio
@@ -12,6 +14,11 @@ public class GameSignals {
     public static EventSignal gameQuit = new EventSignal();
     public static EventSignal gameExited = new EventSignal();
     public static EventSignal gameResumed = new EventSignal();
+
+    // Entities
+    public static Signal<Entity> entityAdded = new Signal<Entity>();
+    public static Signal<Entity> entityRemoved= new Signal<Entity>();
+    public static EventSignal clearEnemies = new EventSignal();
 
     // Player
     public static EventSignal playerDied = new EventSignal();

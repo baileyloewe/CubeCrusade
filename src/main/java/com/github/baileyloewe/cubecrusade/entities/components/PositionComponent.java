@@ -1,11 +1,11 @@
 package com.github.baileyloewe.cubecrusade.entities.components;
 
-public class PositionComponent {
-    public float xPos;
-    public float yPos;
+import com.github.baileyloewe.cubecrusade.Vector2D;
 
-    public PositionComponent(float xPos, float yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+public class PositionComponent {
+    public Vector2D position;
+
+    public PositionComponent(Vector2D position) {
+        this.position = position;
     }
 }
