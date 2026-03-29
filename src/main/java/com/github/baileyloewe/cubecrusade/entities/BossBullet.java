@@ -1,37 +1,36 @@
 package com.github.baileyloewe.cubecrusade.entities;
 
 import com.github.baileyloewe.cubecrusade.Game;
-import com.github.baileyloewe.cubecrusade.GameHandler;
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.Vector2D;
 import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
+import com.github.baileyloewe.cubecrusade.entities.enemies.Enemy;
+import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.util.Random;
 
-/**
- * Creates a EnemyBossBullet that extends the Entity class
- */
-public class EnemyBossBullet extends Entity {
+public class BossBullet extends Enemy {
     private static final Random RNG = new Random();
 
-    public EnemyBossBullet(ID id, GameHandler gameHandler, PositionComponent positionComponent, SizeComponent sizeComponent, MovementComponent movementComponent, DisplayComponent displayComponent) {
-        super(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
+    public BossBullet(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
+        super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
     }
 
-    public static EnemyBossBullet create(ID id, GameHandler gameHandler, Vector2D position) {
+    public static BossBullet create(ID id, Vector2D position) {
         PositionComponent positionComponent = new PositionComponent(position);
         SizeComponent sizeComponent = new SizeComponent(32, 32);
         Vector2D initialDirection = new Vector2D(
-                RNG.nextBoolean() ? 1 : -1,
+                RNG.nextFloat(-1, 2),
                 1
         );
-        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialDirection, 2);
+        float maxSpeed = RNG.nextFloat(2, 4);
+        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialDirection, maxSpeed);
         int[] rowCol = getImagePos();
         DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, rowCol[0], rowCol[1]);
-        return new EnemyBossBullet(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
+        return new BossBullet(id, positionComponent, sizeComponent, displayComponent, movementComponent);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class EnemyBossBullet extends Entity {
         movementComponent.tick();
 
         if (positionComponent.position.y >= Game.HEIGHT) {
-            gameHandler.removeEntity(this);
+            GameSignals.entityRemoved.emit(this);
         }
     }
 

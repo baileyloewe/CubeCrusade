@@ -1,6 +1,6 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.entities.*;
+import com.github.baileyloewe.cubecrusade.entities.enemies.*;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class Spawn {
     private final ServiceLocator serviceLocator;
-    private final Random r = new Random();
+    private final Random RNG = new Random();
     private final Map<Integer, EnemyType> spawnMap = new HashMap<>();
 
 
@@ -37,8 +37,8 @@ public class Spawn {
         boolean spawned = false;
         do {
             // Create an x and y var that is within the game width and height
-            float x = r.nextFloat(5, Game.WIDTH - 36);
-            float y = r.nextFloat(5, Game.HEIGHT - 36);
+            float x = RNG.nextFloat(5, Game.WIDTH - 36);
+            float y = RNG.nextFloat(5, Game.HEIGHT - 36);
 
             /*
              The rectangle's coordinates in the below line of code are determined as follows:
@@ -63,18 +63,18 @@ public class Spawn {
                 switch (enemyType) {
                     case BOSS -> {
                         serviceLocator.getGameHandler().clearEnemies();
-                        EnemyBoss.create(ID.BossEnemy, serviceLocator.getGameHandler());
+                        BossEnemy.create(ID.BossEnemy);
                     }
-                    case SMART -> EnemySmart.create(ID.SmartEnemy, serviceLocator.getGameHandler(), serviceLocator.getPlayer(), x, y);
+                    case SMART -> SmartEnemy.create(ID.SmartEnemy,  serviceLocator.getPlayer(), new Vector2D(x, y));
                     case FAST -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
-                            EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 3.f, 3.f);
-                        else EnemyFast.create(ID.FastEnemy, serviceLocator.getGameHandler(), x, y, 2.f, 2.f);
+                            FastEnemy.create(ID.FastEnemy, new Vector2D(x, y), 3);
+                        else FastEnemy.create(ID.FastEnemy, new Vector2D(x, y), 2);
                     }
                     case SLOW -> {
                         if (serviceLocator.getGame().difficulty == Difficulty.EASY)
-                            EnemySlow.create(ID.SlowEnemy, serviceLocator.getGameHandler(), x, y);
-                        else EnemyHard.create(ID.HardEnemy, serviceLocator.getGameHandler(), x, y);
+                            SlowEnemy.create(ID.SlowEnemy, new Vector2D(x, y));
+                        else HardEnemy.create(ID.HardEnemy, new Vector2D(x, y));
                     }
                     default -> {
                     }

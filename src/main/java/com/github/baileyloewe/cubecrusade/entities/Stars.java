@@ -1,15 +1,13 @@
 package com.github.baileyloewe.cubecrusade.entities;
 
-import com.github.baileyloewe.cubecrusade.GameHandler;
-
 import java.awt.*;
 
 public class Stars extends Entity {
 
     private final Point[] locations = new Point[26];
 
-    public Stars(GameHandler gameHandler) {
-        super(gameHandler);
+    public Stars() {
+        super();
         setLocations();
     }
 
@@ -52,5 +50,4 @@ public class Stars extends Entity {
             g.drawLine(location.x, location.y - 2, location.x, location.y + 2);
         }
     }
-
 }

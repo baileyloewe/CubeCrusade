@@ -1,45 +1,44 @@
 package com.github.baileyloewe.cubecrusade.entities;
 
-import com.github.baileyloewe.cubecrusade.GameHandler;
 import com.github.baileyloewe.cubecrusade.ID;
+import com.github.baileyloewe.cubecrusade.Vector2D;
 import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
+import com.github.baileyloewe.cubecrusade.entities.enemies.Enemy;
 
 import java.awt.*;
 import java.util.Random;
 
 /**
- Creates a EnemyMenuParticle that extends the Enemy class
+ Creates a MenuParticle that extends the Enemy class
  */
-public class MenuParticle extends Entity {
+public class MenuParticle extends Enemy {
+    private static final Random RNG = new Random();
 
-    private static final Random r = new Random();
-
-    public MenuParticle(ID id, GameHandler gameHandler, PositionComponent positionComponent, SizeComponent sizeComponent, MovementComponent movementComponent, DisplayComponent displayComponent) {
-        super(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
+    public MenuParticle(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
+        super(id,positionComponent, sizeComponent, displayComponent, movementComponent);
+        movementComponent.xAxisCollision.connect(movementComponent::bounceX);
+        movementComponent.yAxisCollision.connect(movementComponent::bounceY);
     }
 
-    public static MenuParticle create(ID id, GameHandler gameHandler, float xPos, float yPos) {
-        PositionComponent positionComponent = new PositionComponent(xPos, yPos);
-        int dimension = r.nextInt(16,33);
+    public static MenuParticle create(ID id, Vector2D position) {
+        PositionComponent positionComponent = new PositionComponent(position);
+        int dimension = RNG.nextInt(16,33);
         SizeComponent sizeComponent = new SizeComponent(dimension, dimension);
-        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, getRandomVelocity(), getRandomVelocity(), getRandomVelocity());
-        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+        Vector2D initialDirection = new Vector2D(
+                RNG.nextBoolean() ? 1 : -1,
+                RNG.nextBoolean() ? 1 : -1
+        );
+        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialDirection, getRandomVelocity());
+        DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, new Color(RNG.nextInt(255), RNG.nextInt(255), RNG.nextInt(255)));
 
-        return new MenuParticle(id, gameHandler, positionComponent, sizeComponent, movementComponent, displayComponent);
+        return new MenuParticle(id, positionComponent, sizeComponent, displayComponent, movementComponent);
     }
 
     private static int getRandomVelocity() {
-        if ((r.nextInt(1,2) == 1)) {
-            if (r.nextInt(2) == 1) return r.nextInt(1,8) * -1;
-            else return r.nextInt(1, 5);
-        }
-        else {
-            if (r.nextInt(2) == 1) return r.nextInt(1,8) * -1;
-            else return r.nextInt(1,2);
-        }
+        if (RNG.nextInt(1, 5) == 1) return RNG.nextInt(4,8); // 25 % chance to make a fast particle
+        else return RNG.nextInt(1, 4); // 75 % chance to make a regular particle
     }
-
 }
