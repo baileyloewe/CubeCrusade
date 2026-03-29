@@ -2,6 +2,7 @@ package com.github.baileyloewe.cubecrusade.menus;
 
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
+import com.github.baileyloewe.cubecrusade.Vector2D;
 import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -22,7 +23,7 @@ public class GameOverMenu extends Menu {
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
             GameSignals.gameQuit.emit();
-            MenuParticle.create( ID.MenuParticle, gameHandler, mouseX, mouseY);
+            MenuParticle.create( ID.MenuParticle, new Vector2D(mouseX, mouseY));
         }
     }
 

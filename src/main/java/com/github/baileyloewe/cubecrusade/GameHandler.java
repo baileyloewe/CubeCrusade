@@ -10,11 +10,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * This class handles ticking, rendering, and adding/removing entities to the game
  */
 public class GameHandler {
-
-    CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
+    private final CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
 
     public GameHandler() {
         GameSignals.gameQuit.connect(this::clearAll);
+        GameSignals.entityAdded.connect(this::addEntity);
+        GameSignals.entityRemoved.connect(this::removeEntity);
+        GameSignals.clearEnemies.connect(this::clearEnemies);
     }
 
     public void tick() {

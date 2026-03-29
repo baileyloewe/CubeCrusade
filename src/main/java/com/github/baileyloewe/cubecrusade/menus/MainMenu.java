@@ -3,6 +3,7 @@ package com.github.baileyloewe.cubecrusade.menus;
 import com.github.baileyloewe.cubecrusade.GraphicsUtil;
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.MenuBoxItem;
+import com.github.baileyloewe.cubecrusade.Vector2D;
 import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -13,7 +14,6 @@ import static com.github.baileyloewe.cubecrusade.GraphicsUtil.drawRectAndString;
 public class MainMenu extends Menu {
     private final MenuBoxItem menuMenuBox, menuStartBox, menuSettingsBox, menuExitBox;
     private int menuParticleCount;
-
 
     public MainMenu(MenuManager menuManager) {
         super(menuManager);
@@ -31,10 +31,6 @@ public class MainMenu extends Menu {
     }
 
     public void interact(int mouseX, int mouseY) {
-        if (menuParticleCount < 25) {
-            MenuParticle.create(ID.MenuParticle, gameHandler, mouseX, mouseY);
-            menuParticleCount++;
-        }
         if (mouseOverItem(menuStartBox, mouseX, mouseY))
         {
             GameSignals.gameStarted.emit();
@@ -45,6 +41,10 @@ public class MainMenu extends Menu {
         } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
         {
             GameSignals.gameExited.emit();
+        } else if (menuParticleCount < 25) {
+                MenuParticle.create(ID.MenuParticle, new Vector2D(mouseX, mouseY));
+                menuParticleCount++;
         }
     }
 }
+
