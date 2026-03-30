@@ -6,15 +6,11 @@ import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
-import com.github.baileyloewe.cubecrusade.entities.enemies.Enemy;
 
 import java.awt.*;
 import java.util.Random;
 
-/**
- Creates a MenuParticle that extends the Enemy class
- */
-public class MenuParticle extends Enemy {
+public class MenuParticle extends Entity {
     private static final Random RNG = new Random();
 
     public MenuParticle(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
@@ -31,14 +27,10 @@ public class MenuParticle extends Enemy {
                 RNG.nextBoolean() ? 1 : -1,
                 RNG.nextBoolean() ? 1 : -1
         );
-        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialDirection, getRandomVelocity());
+        int randomVelocity = (RNG.nextInt(1, 5) == 1) ? RNG.nextInt(4,8) : RNG.nextInt(1,4);  // 25 % chance to make a fast particle
+        MovementComponent movementComponent = new MovementComponent(positionComponent, sizeComponent, initialDirection, randomVelocity);
         DisplayComponent displayComponent = new DisplayComponent(positionComponent, sizeComponent, new Color(RNG.nextInt(255), RNG.nextInt(255), RNG.nextInt(255)));
 
         return new MenuParticle(id, positionComponent, sizeComponent, displayComponent, movementComponent);
-    }
-
-    private static int getRandomVelocity() {
-        if (RNG.nextInt(1, 5) == 1) return RNG.nextInt(4,8); // 25 % chance to make a fast particle
-        else return RNG.nextInt(1, 4); // 75 % chance to make a regular particle
     }
 }

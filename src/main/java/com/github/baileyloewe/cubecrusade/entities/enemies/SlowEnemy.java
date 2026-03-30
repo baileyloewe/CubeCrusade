@@ -2,6 +2,7 @@ package com.github.baileyloewe.cubecrusade.entities.enemies;
 
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.Vector2D;
+import com.github.baileyloewe.cubecrusade.entities.Entity;
 import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
@@ -9,7 +10,7 @@ import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
 
 import java.util.Random;
 
-public class SlowEnemy extends Enemy {
+public class SlowEnemy extends Entity {
     private static final Random RNG = new Random();
 
 
