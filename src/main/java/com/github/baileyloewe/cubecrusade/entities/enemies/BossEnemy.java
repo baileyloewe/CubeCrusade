@@ -4,16 +4,15 @@ import com.github.baileyloewe.cubecrusade.Game;
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.Vector2D;
 import com.github.baileyloewe.cubecrusade.entities.BossBullet;
+import com.github.baileyloewe.cubecrusade.entities.Entity;
 import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
-/**
- * Creates a BossEnemy that extends the Enemy class
- */
-public class BossEnemy extends Enemy {
+
+public class BossEnemy extends Entity {
     private final long lifespan;
     private long spawnTimer;
     private boolean xUpdated;

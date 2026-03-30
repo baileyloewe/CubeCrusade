@@ -7,12 +7,11 @@ import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
-import com.github.baileyloewe.cubecrusade.entities.enemies.Enemy;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.util.Random;
 
-public class BossBullet extends Enemy {
+public class BossBullet extends Entity {
     private static final Random RNG = new Random();
 
     public BossBullet(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
