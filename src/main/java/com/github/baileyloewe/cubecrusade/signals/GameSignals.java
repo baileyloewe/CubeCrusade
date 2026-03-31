@@ -20,8 +20,7 @@ public class GameSignals {
     public static Signal<Entity> entityAdded = new Signal<>();
     public static Signal<Entity> entityRemoved = new Signal<>();
     public static EventSignal clearEnemies = new EventSignal();
-
-
+    
     // Player
     public static EventSignal playerDied = new EventSignal();
 
