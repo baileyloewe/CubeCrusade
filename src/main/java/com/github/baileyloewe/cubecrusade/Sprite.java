@@ -3,10 +3,10 @@ package com.github.baileyloewe.cubecrusade;
 import java.awt.image.BufferedImage;
 
 public class Sprite {
-    private BufferedImage sprite;
+    private final BufferedImage sprite;
 
-    public Sprite(BufferedImage ss) {
-        this.sprite = ss;
+    public Sprite(BufferedImage spritesheet) {
+        this.sprite = spritesheet;
     }
 
     public BufferedImage grabSprite(int x, int y, int width, int height) {

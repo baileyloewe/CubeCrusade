@@ -14,11 +14,13 @@ public class GameSignals {
     public static EventSignal gameQuit = new EventSignal();
     public static EventSignal gameExited = new EventSignal();
     public static EventSignal gameResumed = new EventSignal();
+    public static EventSignal levelChanged = new EventSignal();
 
     // Entities
-    public static Signal<Entity> entityAdded = new Signal<Entity>();
-    public static Signal<Entity> entityRemoved= new Signal<Entity>();
+    public static Signal<Entity> entityAdded = new Signal<>();
+    public static Signal<Entity> entityRemoved = new Signal<>();
     public static EventSignal clearEnemies = new EventSignal();
+
 
     // Player
     public static EventSignal playerDied = new EventSignal();
@@ -32,8 +34,4 @@ public class GameSignals {
     public static EventSignal healthUpgradePurchased = new EventSignal();
     public static EventSignal speedUpgradePurchased = new EventSignal();
     public static EventSignal healthRefillPurchased = new EventSignal();
-
-    // Health
-    public static Signal<Integer> baseHealthIncreased = new Signal<>();
-    public static EventSignal healthRefilled = new EventSignal();
 }
