@@ -3,7 +3,6 @@ package com.github.baileyloewe.cubecrusade;
 import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.entities.Player;
 import com.github.baileyloewe.cubecrusade.entities.Stars;
-import com.github.baileyloewe.cubecrusade.entities.enemies.HardEnemy;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -78,9 +77,7 @@ public class Game extends Canvas implements Runnable {
         spawn = new Spawn(this, gameHandler, player);
         hud = new HUD(this, player);
         menuManager.initGameMenus(player);
-        if (difficulty == Difficulty.EASY) spawn.spawnEnemy(SLOW);
-        else HardEnemy.create(ID.HardEnemy, new Vector2D(1, 1));
-
+        spawn.spawnEnemy(SLOW);
         gameState = GameState.GAME;
         gameActive = true;
     }
