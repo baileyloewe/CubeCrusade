@@ -2,15 +2,15 @@ package com.github.baileyloewe.cubecrusade.entities.components;
 
 import com.github.baileyloewe.cubecrusade.Game;
 import com.github.baileyloewe.cubecrusade.Vector2D;
-import com.github.baileyloewe.cubecrusade.signals.Signals;
+import com.github.baileyloewe.cubecrusade.signals.Signals.EventSignal;
 
 public class MovementComponent {
     public Vector2D direction;
     public float maxSpeed;
     public final PositionComponent positionComponent;
     public final SizeComponent sizeComponent;
-    public final Signals.EventSignal xAxisCollision = new Signals.EventSignal();
-    public final Signals.EventSignal yAxisCollision = new Signals.EventSignal();
+    public final EventSignal xAxisCollision = new EventSignal();
+    public final EventSignal yAxisCollision = new EventSignal();
 
     public MovementComponent(PositionComponent positionComponent, SizeComponent sizeComponent, Vector2D direction, float maxSpeed) {
         this.positionComponent = positionComponent;
