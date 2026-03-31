@@ -1,8 +1,6 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
-import com.github.baileyloewe.cubecrusade.ID;
-import com.github.baileyloewe.cubecrusade.MenuBoxItem;
-import com.github.baileyloewe.cubecrusade.Vector2D;
+import com.github.baileyloewe.cubecrusade.*;
 import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
@@ -12,10 +10,12 @@ import static com.github.baileyloewe.cubecrusade.GraphicsUtil.Fonts;
 import static com.github.baileyloewe.cubecrusade.GraphicsUtil.drawRectAndString;
 
 public class GameOverMenu extends Menu {
+    private final Game game;
     private final MenuBoxItem mainMenuBox, gameOverBox;
 
-    public GameOverMenu(MenuManager menuManager) {
+    public GameOverMenu(MenuManager menuManager, Game game) {
         super(menuManager);
+        this.game = game;
         gameOverBox = new MenuBoxItem(centeredX - 175, centeredY - 170, 350, 70, "GAME OVER");
         mainMenuBox = new MenuBoxItem(centeredX - 90, centeredY + 163, 180, 44, "MAIN MENU");
     }
@@ -31,7 +31,7 @@ public class GameOverMenu extends Menu {
         gameHandler.clearAll();
         drawRectAndString(g, gameOverBox, Fonts.XLARGE);
         g.setFont(Fonts.SMALL.getFont());
-        g.drawString("You lost with a score of " + upgrade.getScore() + "\n on level " + upgrade.getLevel(), centeredX - 180, centeredY);
+        g.drawString("You lost on level " + game.level, centeredX - 180, centeredY);
         drawRectAndString(g, mainMenuBox, Fonts.MEDIUM);
     }
 

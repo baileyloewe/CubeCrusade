@@ -11,18 +11,17 @@ public class Player extends Entity {
     private boolean damageTimeout = false;
     private long timerEnd;
     private final HealthComponent healthComponent;
+    private final UpgradeComponent upgradeComponent;
     private final KeyInput keyInput;
+    private float gold = 0;
 
     public Player(ID id, GameHandler gameHandler, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent, KeyInput keyInput) {
         super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
         this.gameHandler = gameHandler;
         this.keyInput = keyInput;
         healthComponent = new HealthComponent(100);
-        healthComponent.died.connect(() -> GameSignals.playerDied.emit());
-        GameSignals.baseHealthIncreased.connect(this::onBaseHealthIncreased);
-        GameSignals.healthRefilled.connect(healthComponent::fullHeal);
-        movementComponent.xAxisCollision.connect(this::clamp);
-        movementComponent.yAxisCollision.connect(this::clamp);
+        upgradeComponent = new UpgradeComponent(this);
+        connectSignals();
     }
 
     public static Player create(ID id, GameHandler gameHandler, Vector2D position, KeyInput keyInput) {
@@ -33,6 +32,17 @@ public class Player extends Entity {
         return new Player(id, gameHandler, positionComponent, sizeComponent, displayComponent, movementComponent, keyInput);
     }
 
+    public void connectSignals() {
+        healthComponent.died.connect(() -> GameSignals.playerDied.emit());
+
+        upgradeComponent.baseHealthIncreased.connect(healthComponent::increaseMaxHealth);
+        upgradeComponent.healthRefilled.connect(healthComponent::fullHeal);
+        upgradeComponent.speedIncreased.connect((val) -> movementComponent.maxSpeed += val);
+
+        movementComponent.xAxisCollision.connect(() -> positionComponent.clamp(sizeComponent));
+        movementComponent.yAxisCollision.connect(() -> positionComponent.clamp(sizeComponent));
+    }
+
     public void tick() {
         if (damageTimeout && (System.nanoTime() > timerEnd)) {
             damageTimeout = false;
@@ -40,20 +50,12 @@ public class Player extends Entity {
         collision();
         updateDirection();
         movementComponent.tick();
+        this.gold += .1f;
     }
 
     private void updateDirection() {
         movementComponent.direction.x = keyInput.dPressed - keyInput.aPressed;
         movementComponent.direction.y = keyInput.sPressed - keyInput.wPressed;
-    }
-
-    public void clamp() {
-        positionComponent.position.x = Math.clamp(positionComponent.position.x, 0, Game.WIDTH - sizeComponent.width);
-        positionComponent.position.y = Math.clamp(positionComponent.position.y, 0, Game.HEIGHT - sizeComponent.height);
-    }
-
-    public PositionComponent getPositionComponent() {
-        return positionComponent;
     }
 
     private void collision() {
@@ -76,16 +78,24 @@ public class Player extends Entity {
         return healthComponent.maxHealth;
     }
 
-    public void onBaseHealthIncreased(int amount) {
-        healthComponent.increaseMaxHealth(amount);
+    public float getGold() {
+        return gold;
     }
 
-    public float getXPos() {
-        return positionComponent.position.x;
+    public void removeGold(float gold) {
+        this.gold -= gold;
     }
 
-    public float getYPos() {
-        return positionComponent.position.y;
+    public PositionComponent getPositionComponent() {
+        return positionComponent;
+    }
+
+    public SizeComponent getSizeComponent() {
+        return sizeComponent;
+    }
+
+    public UpgradeComponent getUpgradeComponent() {
+        return upgradeComponent;
     }
 
 }
