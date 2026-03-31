@@ -11,6 +11,8 @@ import com.github.baileyloewe.cubecrusade.entities.components.PositionComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.SizeComponent;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class BossEnemy extends Entity {
     private final long lifespan;
@@ -19,9 +21,10 @@ public class BossEnemy extends Entity {
 
     public BossEnemy(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
         super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
-        lifespan = System.currentTimeMillis() + 9500;
-        spawnTimer = System.currentTimeMillis() + 500;
+        lifespan = System.nanoTime() + TimeUnit.SECONDS.toNanos(10L);
+        spawnTimer = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(500);
     }
+
     public static BossEnemy create(ID id) {
         PositionComponent positionComponent = new PositionComponent(new Vector2D(Game.WIDTH / 2.f - 64, -128));
         SizeComponent sizeComponent = new SizeComponent(128, 128);
@@ -32,7 +35,7 @@ public class BossEnemy extends Entity {
 
     @Override
     public void tick() {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = System.nanoTime();
         if (currentTime > lifespan) {
             GameSignals.clearEnemies.emit();
         }
@@ -55,8 +58,8 @@ public class BossEnemy extends Entity {
             BossBullet.create(
                     ID.BossEnemyBullet,
                     new Vector2D(positionComponent.position.x + ((float) sizeComponent.width / 2) - 8,
-                    positionComponent.position.y + ((float) sizeComponent.height / 2) - 8));
-            spawnTimer = currentTime + 50;
+                            positionComponent.position.y + ((float) sizeComponent.height / 2) - 8));
+            spawnTimer = currentTime + TimeUnit.MILLISECONDS.toNanos(50);
         }
     }
 }
