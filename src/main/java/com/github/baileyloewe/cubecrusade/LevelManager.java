@@ -17,6 +17,7 @@ public class LevelManager {
 
     private void init() {
         setLevel(1);
+        timeLastTicked = 0L;
     }
 
     public void tick() {
