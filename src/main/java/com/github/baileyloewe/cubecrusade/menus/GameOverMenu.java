@@ -23,7 +23,7 @@ public class GameOverMenu extends Menu {
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(mainMenuBox, mouseX, mouseY)) {
             GameSignals.gameQuit.emit();
-            MenuParticle.create( ID.MenuParticle, new Vector2D(mouseX, mouseY));
+            MenuParticle.create(ID.MenuParticle, new Vector2D(mouseX, mouseY));
         }
     }
 

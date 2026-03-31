@@ -28,10 +28,9 @@ public class SettingsMenu extends Menu {
 
     public void interact(int mouseX, int mouseY) {
         if (mouseOverItem(backBox, mouseX, mouseY)) {
-            if (serviceLocator.getGame().gameActive) serviceLocator.getGame().gameState = GameState.PAUSED;
-            else serviceLocator.getGame().gameState = GameState.MENU;
-        }
-        else if (mouseOverItem(volumeUpBox, mouseX, mouseY)) {
+            if (game.gameActive) game.gameState = GameState.PAUSED;
+            else game.gameState = GameState.MAINMENU;
+        } else if (mouseOverItem(volumeUpBox, mouseX, mouseY)) {
             GameSignals.audioAdjusted.emit(5);
         } else if (mouseOverItem(volumeDownBox, mouseX, mouseY)) {
             GameSignals.audioAdjusted.emit(-5);
@@ -51,8 +50,7 @@ public class SettingsMenu extends Menu {
         drawRectAndString(g, volumeTitle, Fonts.MEDIUM);
         if (serviceLocator.getAudioStream().isPlaying()) {
             drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, Color.black);
-        }
-        else drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, new Color(109, 10, 6));
+        } else drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, new Color(109, 10, 6));
 
         drawVolumeUpAndDown(g, volumeDownBox, volumeUpBox);
 

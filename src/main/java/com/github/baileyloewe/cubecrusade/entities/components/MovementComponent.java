@@ -39,7 +39,7 @@ public class MovementComponent {
     }
 
     public void bounceY() {
-        direction.y *= - 1;
+        direction.y *= -1;
     }
 
 }

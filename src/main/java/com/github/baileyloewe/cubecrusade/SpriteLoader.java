@@ -5,17 +5,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class SpriteLoader
-{
+public class SpriteLoader {
     private final Game game;
 
-    public SpriteLoader(ServiceLocator serviceLocator)
-    {
-        this.game = serviceLocator.getGame();
+    public SpriteLoader(Game game) {
+        this.game = game;
     }
 
-    public BufferedImage loadImage(String path)
-    {
+    public BufferedImage loadImage(String path) {
         synchronized (game) {
             try {
                 // Use getResourceAsStream instead of File for JAR compatibility
