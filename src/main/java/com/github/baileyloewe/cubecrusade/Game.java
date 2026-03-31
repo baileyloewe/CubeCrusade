@@ -73,6 +73,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public void startGame() {
+        gameHandler.clearAll();
         Player player = Player.create(ID.Player, gameHandler, new Vector2D(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32), keyInput);
         spawn = new Spawn(this, gameHandler, player);
         hud = new HUD(this, player);
