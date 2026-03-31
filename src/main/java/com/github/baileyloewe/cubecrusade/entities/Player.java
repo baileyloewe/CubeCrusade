@@ -4,6 +4,8 @@ import com.github.baileyloewe.cubecrusade.*;
 import com.github.baileyloewe.cubecrusade.entities.components.*;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
+import java.util.concurrent.TimeUnit;
+
 public class Player extends Entity {
     private final GameHandler gameHandler;
     private boolean damageTimeout = false;
@@ -32,7 +34,7 @@ public class Player extends Entity {
     }
 
     public void tick() {
-        if (damageTimeout && (System.currentTimeMillis() > timerEnd)) {
+        if (damageTimeout && (System.nanoTime() > timerEnd)) {
             damageTimeout = false;
         }
         collision();
@@ -60,7 +62,7 @@ public class Player extends Entity {
                 if (this.getBounds().intersects(entity.getBounds()) && !damageTimeout) {
                     healthComponent.damage(1);
                     damageTimeout = true;
-                    timerEnd = System.currentTimeMillis() + 8;
+                    timerEnd = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(8);
                 }
             }
         }

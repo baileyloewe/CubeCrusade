@@ -89,14 +89,6 @@ public class Game extends Canvas implements Runnable {
         System.exit(0);
     }
 
-    public void sleepThread(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public synchronized void start() {
         thread = new Thread(this);
         thread.start();
@@ -115,25 +107,19 @@ public class Game extends Canvas implements Runnable {
     public void run() {
         this.requestFocus();
         long lastTime = System.nanoTime();
-        double amountOfTicks = 128.0;
-        double ns = 1000000000 / amountOfTicks;
+        double tickRate = 128.0;
+        double nanosecondsPerTick = 1000000000 / tickRate;
         double delta = 0;
-        long timer = System.currentTimeMillis();
         while (running) {
             long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
-            lastTime = now;
+            delta += (now - lastTime) / nanosecondsPerTick;
             while (delta >= 1) {
                 tick();
                 delta--;
             }
-
+            lastTime = System.nanoTime();
             if (running) {
                 render();
-            }
-
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
             }
         }
         stop();
