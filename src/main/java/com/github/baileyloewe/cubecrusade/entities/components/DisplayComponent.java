@@ -31,8 +31,7 @@ public class DisplayComponent {
     public void render(Graphics g) {
         if (useSprite) {
             g.drawImage(image, (int) positionComponent.position.x, (int) positionComponent.position.y, null);
-        }
-        else {
+        } else {
             Color prevColor = g.getColor();
             g.setColor(color);
             g.drawRect((int) positionComponent.position.x, (int) positionComponent.position.y, sizeComponent.width, sizeComponent.height);

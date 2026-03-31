@@ -31,19 +31,16 @@ public class MainMenu extends Menu {
     }
 
     public void interact(int mouseX, int mouseY) {
-        if (mouseOverItem(menuStartBox, mouseX, mouseY))
-        {
+        if (mouseOverItem(menuStartBox, mouseX, mouseY)) {
             GameSignals.gameStarted.emit();
             menuParticleCount = 0;
-        } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY))
-        {
+        } else if (mouseOverItem(menuSettingsBox, mouseX, mouseY)) {
             GameSignals.openSettings.emit();
-        } else if (mouseOverItem(menuExitBox, mouseX, mouseY))
-        {
+        } else if (mouseOverItem(menuExitBox, mouseX, mouseY)) {
             GameSignals.gameExited.emit();
         } else if (menuParticleCount < 25) {
-                MenuParticle.create(ID.MenuParticle, new Vector2D(mouseX, mouseY));
-                menuParticleCount++;
+            MenuParticle.create(ID.MenuParticle, new Vector2D(mouseX, mouseY));
+            menuParticleCount++;
         }
     }
 }

@@ -11,10 +11,9 @@ import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 import java.awt.*;
 
 /**
- Creates an abstract Entity object for use in the game
+ * Creates an abstract Entity object for use in the game
  */
-public abstract class Entity
-{
+public abstract class Entity {
     protected PositionComponent positionComponent;
     protected MovementComponent movementComponent;
     protected SizeComponent sizeComponent;
@@ -23,9 +22,7 @@ public abstract class Entity
     protected GameHandler gameHandler;
 
 
-
-    public Entity(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent)
-    {
+    public Entity(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
         this.positionComponent = positionComponent;
         this.sizeComponent = sizeComponent;
         this.movementComponent = movementComponent;
@@ -44,15 +41,16 @@ public abstract class Entity
     public void render(Graphics g) {
         displayComponent.render(g);
     }
+
     public Rectangle getBounds() {
         return new Rectangle((int) positionComponent.position.x, (int) positionComponent.position.y, (int) sizeComponent.width, (int) sizeComponent.height);
     }
-    public ID getID()
-    {
+
+    public ID getID() {
         return id;
     }
-    public void setID(ID id)
-    {
+
+    public void setID(ID id) {
         this.id = id;
     }
 

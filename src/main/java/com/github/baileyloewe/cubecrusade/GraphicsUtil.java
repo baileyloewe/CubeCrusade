@@ -16,7 +16,7 @@ public final class GraphicsUtil extends MouseAdapter {
         public final Font font;
 
         Fonts(Font font) {
-           this.font = font;
+            this.font = font;
         }
 
         public Font getFont() {
@@ -24,13 +24,14 @@ public final class GraphicsUtil extends MouseAdapter {
         }
     }
 
-    private GraphicsUtil() {}
+    private GraphicsUtil() {
+    }
 
     /**
      * drawRect in Java draws +1 to the x and y of a given MenuBoxItem, which is not in line with other draw methods from the same class
      * This removes 1 from the width and height (visually) of the given MenuBoxItem to fix that behavior
      */
-    public static  void drawRect(Graphics g, MenuBoxItem r) {
+    public static void drawRect(Graphics g, MenuBoxItem r) {
         g.drawRect(r.rect.x, r.rect.y, r.rect.width - 1, r.rect.height - 1);
     }
 
