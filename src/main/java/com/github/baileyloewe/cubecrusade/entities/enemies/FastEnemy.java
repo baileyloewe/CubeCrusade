@@ -15,8 +15,8 @@ public class FastEnemy extends Entity {
 
     public FastEnemy(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, MovementComponent movementComponent, DisplayComponent displayComponent) {
         super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
-        movementComponent.xAxisCollision.connect(movementComponent::bounceX);
-        movementComponent.yAxisCollision.connect(movementComponent::bounceY);
+        movementComponent.xAxisCollision.connect(this, movementComponent::bounceX);
+        movementComponent.yAxisCollision.connect(this, movementComponent::bounceY);
     }
     
     public static FastEnemy create(ID id, Vector2D position, float maxSpeed) {

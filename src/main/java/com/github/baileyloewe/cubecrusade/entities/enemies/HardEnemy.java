@@ -16,11 +16,11 @@ public class HardEnemy extends Entity {
 
     public HardEnemy(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
         super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
-        movementComponent.xAxisCollision.connect(() -> {
+        movementComponent.xAxisCollision.connect(this, () -> {
             movementComponent.maxSpeed = (int) (Math.random() * 6);
             movementComponent.bounceX();
         });
-        movementComponent.yAxisCollision.connect(() -> {
+        movementComponent.yAxisCollision.connect(this, () -> {
             movementComponent.maxSpeed = (int) (Math.random() * 6);
             movementComponent.bounceY();
         });

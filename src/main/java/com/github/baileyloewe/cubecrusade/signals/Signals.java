@@ -1,17 +1,18 @@
 package com.github.baileyloewe.cubecrusade.signals;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class Signals {
-    private Signals() {}
+    private Signals() {
+    }
 
     public static class BaseSignal<C> {
-        protected final List<C> subscribers = new ArrayList<>();
+        protected final Map<Object, C> subscribers = new ConcurrentHashMap<>();
 
-        public void disconnect(C callback) {
-            subscribers.remove(callback);
+        public void disconnect(Object owner) {
+            subscribers.remove(owner);
         }
 
         public void clear() {
@@ -21,26 +22,26 @@ public class Signals {
 
     public static class Signal<T> extends BaseSignal<Consumer<T>> {
 
-        public void connect(Consumer<T> callback) {
-            subscribers.add(callback);
+        public void connect(Object owner, Consumer<T> callback) {
+            subscribers.put(owner, callback);
         }
 
         public void emit(T data) {
-            for (Consumer<T> subscriber : List.copyOf(subscribers)) {
-                subscriber.accept(data);
+            for (ConcurrentHashMap.Entry<Object, Consumer<T>> entry : subscribers.entrySet()) {
+                entry.getValue().accept(data);
             }
         }
     }
 
     public static class EventSignal extends BaseSignal<Runnable> {
 
-        public void connect(Runnable callback) {
-            subscribers.add(callback);
+        public void connect(Object owner, Runnable callback) {
+            subscribers.put(owner, callback);
         }
 
         public void emit() {
-            for (Runnable subscriber : List.copyOf(subscribers)) {
-                subscriber.run();
+            for (ConcurrentHashMap.Entry<Object, Runnable> subscriber : subscribers.entrySet()) {
+                subscriber.getValue().run();
             }
         }
     }

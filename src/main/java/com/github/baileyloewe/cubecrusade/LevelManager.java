@@ -11,8 +11,8 @@ public class LevelManager {
 
     public LevelManager(Game game) {
         this.game = game;
-        GameSignals.gameStarted.connect(this::init);
-        GameSignals.gameQuit.connect(this::init);
+        GameSignals.gameStarted.connect(this, this::init);
+        GameSignals.gameQuit.connect(this, this::init);
     }
 
     private void init() {

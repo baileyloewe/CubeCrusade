@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 public class KeyInput extends KeyAdapter {
 
     public int wPressed, aPressed, sPressed, dPressed;
-    private Game game;
+    private final Game game;
 
     public KeyInput(Game game) {
         this.game = game;
@@ -23,18 +23,10 @@ public class KeyInput extends KeyAdapter {
         switch (game.gameState) {
             case GAME:
                 switch (keyCode) {
-                    case KeyEvent.VK_W -> {
-                        wPressed = 1;
-                    }
-                    case KeyEvent.VK_A -> {
-                        aPressed = 1;
-                    }
-                    case KeyEvent.VK_S -> {
-                        sPressed = 1;
-                    }
-                    case KeyEvent.VK_D -> {
-                        dPressed = 1;
-                    }
+                    case KeyEvent.VK_W -> wPressed = 1;
+                    case KeyEvent.VK_A -> aPressed = 1;
+                    case KeyEvent.VK_S -> sPressed = 1;
+                    case KeyEvent.VK_D -> dPressed = 1;
                     case KeyEvent.VK_P, KeyEvent.VK_ESCAPE -> GameSignals.openPauseMenu.emit();
                     case KeyEvent.VK_SPACE -> GameSignals.openShop.emit();
                 }
