@@ -1,6 +1,8 @@
 package com.github.baileyloewe.cubecrusade;
 
-import com.github.baileyloewe.cubecrusade.entities.*;
+import com.github.baileyloewe.cubecrusade.entities.MenuParticle;
+import com.github.baileyloewe.cubecrusade.entities.Player;
+import com.github.baileyloewe.cubecrusade.entities.Stars;
 import com.github.baileyloewe.cubecrusade.entities.enemies.HardEnemy;
 import com.github.baileyloewe.cubecrusade.menus.MenuManager;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
@@ -9,57 +11,62 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.Serial;
-import java.util.Random;
 
 import static com.github.baileyloewe.cubecrusade.Spawn.EnemyType.SLOW;
 
 public class Game extends Canvas implements Runnable {
 
-    /**
-     *
-     */
     @Serial
     private static final long serialVersionUID = 1550691097823471818L;
-    private Thread thread;
-    private boolean running = false;
-    private final ServiceLocator serviceLocator;
-
     public static final int WIDTH = 1224, HEIGHT = WIDTH / 12 * 9;
     public static BufferedImage spriteSheet;
+    private final GameHandler gameHandler;
+    private final AudioStream audioStream;
+    private final KeyInput keyInput;
+    private final Stars stars;
+    private final MenuManager menuManager;
+    private Spawn spawn;
+    private HUD hud;
+    private final LevelManager levelManager;
+    public int level = 0;
 
-    public GameState gameState = GameState.MENU;
-    public boolean gameActive = false;
+    private Thread thread;
+
+    public GameState gameState = GameState.MAINMENU;
     public Difficulty difficulty = Difficulty.EASY;
 
+    public boolean gameActive = false;
+    public boolean running = false;
+
+
     public Game() {
-        Random RNG = new Random();
-        serviceLocator = new ServiceLocator();
-        serviceLocator.setGame(this);
-        serviceLocator.setGameHandler(new GameHandler());
-        serviceLocator.setUpgrade(new Upgrade());
-        serviceLocator.setHud(new HUD(serviceLocator));
-        serviceLocator.setSpawn(new Spawn(serviceLocator));
-        serviceLocator.setStar(new Stars());
-        serviceLocator.setKeyInput(new KeyInput(serviceLocator));
-        serviceLocator.setAudioStream(new AudioStream(this));
-        serviceLocator.setMenuManager(new MenuManager(serviceLocator));
-        serviceLocator.setSpriteLoader(new SpriteLoader(serviceLocator));
+        gameHandler = new GameHandler();
+        audioStream = new AudioStream(this);
+        spriteSheet = new SpriteLoader(this).loadImage("/Sprites.png");
+
+        menuManager = new MenuManager(this, gameHandler, audioStream, null);
+        addMouseListener(menuManager);
+        keyInput = new KeyInput(this);
+        addKeyListener(keyInput);
+
+        stars = new Stars();
+        levelManager = new LevelManager(this);
+
+        audioStream.startAudioStream();
+
+        MenuParticle.create(ID.MenuParticle, new Vector2D((float) Game.WIDTH / 2, (float) Game.HEIGHT / 2));
         new Window(WIDTH, HEIGHT, "Cube Crusade", this);
-        this.addKeyListener(serviceLocator.getKeyInput());
-        this.addMouseListener(serviceLocator.getMenuManager());
 
-        MenuParticle.create(ID.MenuParticle, new Vector2D(RNG.nextInt(Game.WIDTH - 16), RNG.nextInt(Game.HEIGHT - 16)));
-
-        serviceLocator.getAudioStream().startAudioStream();
-        spriteSheet = serviceLocator.getSpriteLoader().loadImage("/Sprites.png");
-
-        GameSignals.gameQuit.connect(() -> {this.gameState = GameState.MENU; this.gameActive = false;});
+        GameSignals.gameQuit.connect(() -> {
+            gameState = GameState.MAINMENU;
+            gameActive = false;
+        });
         GameSignals.gameExited.connect(this::exitGame);
-        GameSignals.gameStarted.connect(this::onGameStarted);
-        GameSignals.openPauseMenu.connect(() -> this.gameState = GameState.PAUSED);
-        GameSignals.gameResumed.connect(() -> this.gameState = GameState.GAME);
-        GameSignals.openSettings.connect(() -> this.gameState = GameState.SETTINGS);
-        GameSignals.openShop.connect(() -> this.gameState = GameState.SHOP);
+        GameSignals.gameStarted.connect(this::startGame);
+        GameSignals.openPauseMenu.connect(() -> gameState = GameState.PAUSED);
+        GameSignals.gameResumed.connect(() -> gameState = GameState.GAME);
+        GameSignals.openSettings.connect(() -> gameState = GameState.SETTINGS);
+        GameSignals.openShop.connect(() -> gameState = GameState.SHOP);
         GameSignals.playerDied.connect(() -> {
             keyInput.resetStates();
             gameState = GameState.END;
@@ -139,6 +146,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void render() {
+        // BufferStrategy and Graphics *must* be re-created every frame
         BufferStrategy bs = this.getBufferStrategy();
         if (bs == null) {
             this.createBufferStrategy(3);

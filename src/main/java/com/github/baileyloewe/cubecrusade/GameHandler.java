@@ -13,6 +13,7 @@ public class GameHandler {
     private final CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
 
     public GameHandler() {
+        GameSignals.gameStarted.connect(this::clearAll);
         GameSignals.gameQuit.connect(this::clearAll);
         GameSignals.entityAdded.connect(this::addEntity);
         GameSignals.entityRemoved.connect(this::removeEntity);
