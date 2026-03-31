@@ -1,6 +1,5 @@
 package com.github.baileyloewe.cubecrusade.entities;
 
-import com.github.baileyloewe.cubecrusade.GameHandler;
 import com.github.baileyloewe.cubecrusade.ID;
 import com.github.baileyloewe.cubecrusade.entities.components.DisplayComponent;
 import com.github.baileyloewe.cubecrusade.entities.components.MovementComponent;
@@ -19,7 +18,6 @@ public abstract class Entity {
     protected SizeComponent sizeComponent;
     protected DisplayComponent displayComponent;
     protected ID id;
-    protected GameHandler gameHandler;
 
 
     public Entity(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
