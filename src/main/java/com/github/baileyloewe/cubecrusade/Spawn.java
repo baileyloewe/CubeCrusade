@@ -1,6 +1,8 @@
 package com.github.baileyloewe.cubecrusade;
 
+import com.github.baileyloewe.cubecrusade.entities.Player;
 import com.github.baileyloewe.cubecrusade.entities.enemies.*;
+import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -8,29 +10,26 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Handles spawning enemies based on level/score
+ * Handles spawning enemies based on level
  */
 public class Spawn {
-    private final ServiceLocator serviceLocator;
+
     private final Random RNG = new Random();
     private final Map<Integer, EnemyType> spawnMap = new HashMap<>();
+    private final Game game;
+    private final GameHandler gameHandler;
+    private final Player player;
 
-
-    public Spawn(ServiceLocator serviceLocator) {
-        this.serviceLocator = serviceLocator;
+    public Spawn(Game game, GameHandler gameHandler, Player player) {
+        this.game = game;
+        this.gameHandler = gameHandler;
+        this.player = player;
         this.setSpawnMap();
-    }
-
-    /**
-     * Checks score, sets level based on score, and spawns enemies depending on the level
-     */
-    public void tick() {
-        if (serviceLocator.getUpgrade().getScore() % 1000 == 0) {
-            serviceLocator.getUpgrade().setLevel(serviceLocator.getUpgrade().getLevel() + 1);
-
-            if (spawnMap.get(serviceLocator.getUpgrade().getLevel()) != null)
-                spawnEnemy(spawnMap.get(serviceLocator.getUpgrade().getLevel()));
-        }
+        GameSignals.levelChanged.connect(() -> {
+                    EnemyType enemy = spawnMap.get(game.level);
+                    if (enemy != null) spawnEnemy(enemy);
+                }
+        );
     }
 
     public void spawnEnemy(EnemyType enemyType) {
@@ -56,23 +55,26 @@ public class Spawn {
              height = 250 / 12 * 9 * 2 + 32
 
             */
-            Rectangle PlayerPos = new Rectangle((int) serviceLocator.getPlayer().getXPos() - 250, (int) serviceLocator.getPlayer().getYPos() - (250 / 12 * 9), 250 * 2 + 32, 250 / 12 * 9 * 2 + 32);
+            Vector2D pos = player.getPositionComponent().position;
+            int playerWidth = player.getSizeComponent().width;
+            int playerHeight = player.getSizeComponent().height;
+            Rectangle PlayerPos = new Rectangle((int) pos.x - 250, (int) pos.y - (250 / 12 * 9), 250 * 2 + playerWidth, 250 / 12 * 9 * 2 + playerHeight);
             Rectangle possibleEnemyPos = new Rectangle((int) x, (int) y, 16, 16);
 
             if (!PlayerPos.intersects(possibleEnemyPos)) {
                 switch (enemyType) {
                     case BOSS -> {
-                        serviceLocator.getGameHandler().clearEnemies();
+                        gameHandler.clearEnemies();
                         BossEnemy.create(ID.BossEnemy);
                     }
-                    case SMART -> SmartEnemy.create(ID.SmartEnemy,  serviceLocator.getPlayer(), new Vector2D(x, y));
+                    case SMART -> SmartEnemy.create(ID.SmartEnemy, player, new Vector2D(x, y));
                     case FAST -> {
-                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
+                        if (game.difficulty == Difficulty.EASY)
                             FastEnemy.create(ID.FastEnemy, new Vector2D(x, y), 3);
                         else FastEnemy.create(ID.FastEnemy, new Vector2D(x, y), 2);
                     }
                     case SLOW -> {
-                        if (serviceLocator.getGame().difficulty == Difficulty.EASY)
+                        if (game.difficulty == Difficulty.EASY)
                             SlowEnemy.create(ID.SlowEnemy, new Vector2D(x, y));
                         else HardEnemy.create(ID.HardEnemy, new Vector2D(x, y));
                     }

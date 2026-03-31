@@ -1,22 +1,24 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
 import com.github.baileyloewe.cubecrusade.*;
+import com.github.baileyloewe.cubecrusade.entities.components.UpgradeComponent;
+
+import java.awt.event.MouseEvent;
 
 public abstract class Menu {
     protected MenuManager mm;
-    protected ServiceLocator serviceLocator;
+    protected Game game;
     protected GameHandler gameHandler;
-    protected Upgrade upgrade;
+    protected UpgradeComponent upgradeComponent;
     protected int centeredX, centeredY;
 
     public Menu(MenuManager mm) {
         this.mm = mm;
-        this.serviceLocator = mm.serviceLocator;
         this.gameHandler = mm.gameHandler;
-        this.upgrade = mm.upgrade;
         this.centeredX = mm.centeredX;
         this.centeredY = mm.centeredY;
     }
+
 
     public boolean mouseOverItem(MenuBoxItem menuBoxItem, int mouseX, int mouseY) {
         return (mouseX >= menuBoxItem.rect.x && mouseX <= menuBoxItem.rect.x + menuBoxItem.rect.width) && (mouseY >= menuBoxItem.rect.y && mouseY <= menuBoxItem.rect.y + menuBoxItem.rect.height);

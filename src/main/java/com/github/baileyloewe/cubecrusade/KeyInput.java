@@ -6,11 +6,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class KeyInput extends KeyAdapter {
-    private final ServiceLocator serviceLocator;
-    public int wPressed, aPressed, sPressed, dPressed;
 
-    public KeyInput(ServiceLocator serviceLocator) {
-        this.serviceLocator = serviceLocator;
+    public int wPressed, aPressed, sPressed, dPressed;
+    private Game game;
+
+    public KeyInput(Game game) {
+        this.game = game;
     }
 
     @Override
@@ -19,10 +20,9 @@ public class KeyInput extends KeyAdapter {
         if (keyCode == KeyEvent.VK_M) {
             GameSignals.muteToggled.emit();
         }
-        switch (serviceLocator.getGame().gameState) {
+        switch (game.gameState) {
             case GAME:
-                switch (keyCode)
-                {
+                switch (keyCode) {
                     case KeyEvent.VK_W -> {
                         wPressed = 1;
                     }
@@ -52,7 +52,7 @@ public class KeyInput extends KeyAdapter {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (serviceLocator.getGame().gameState == GameState.GAME) {
+        if (game.gameState == GameState.GAME) {
             int keyCode = e.getKeyCode();
             if (keyCode == KeyEvent.VK_W) {
                 wPressed = 0;

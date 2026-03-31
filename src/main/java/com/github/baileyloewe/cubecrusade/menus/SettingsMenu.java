@@ -1,8 +1,6 @@
 package com.github.baileyloewe.cubecrusade.menus;
 
-import com.github.baileyloewe.cubecrusade.Difficulty;
-import com.github.baileyloewe.cubecrusade.GameState;
-import com.github.baileyloewe.cubecrusade.MenuBoxItem;
+import com.github.baileyloewe.cubecrusade.*;
 import com.github.baileyloewe.cubecrusade.signals.GameSignals;
 
 import java.awt.*;
@@ -11,9 +9,13 @@ import static com.github.baileyloewe.cubecrusade.GraphicsUtil.*;
 
 public class SettingsMenu extends Menu {
     private final MenuBoxItem settingsTitle, backBox, volumeTitle, muteBox, volumeSliderBox, volumeSliderLineBox, volumeDownBox, volumeUpBox, difficultyEasyBox, difficultyHardBox;
+    private final Game game;
+    private final AudioStream audioStream;
 
-    public SettingsMenu(MenuManager menuManager) {
+    public SettingsMenu(MenuManager menuManager, Game game, AudioStream audioStream) {
         super(menuManager);
+        this.game = game;
+        this.audioStream = audioStream;
         settingsTitle = new MenuBoxItem(centeredX - 115, centeredY - 210, 230, 70, "SETTINGS");
         volumeTitle = new MenuBoxItem(centeredX - 60, centeredY - 92, 120, 44, "VOLUME");
         muteBox = new MenuBoxItem(centeredX - 40, centeredY + 13, 80, 44, "MUTE");
@@ -36,11 +38,11 @@ public class SettingsMenu extends Menu {
             GameSignals.audioAdjusted.emit(-5);
         } else if (mouseOverItem(muteBox, mouseX, mouseY)) {
             GameSignals.muteToggled.emit();
-        } else if (!serviceLocator.getGame().gameActive) {
+        } else if (!game.gameActive) {
             if (mouseOverItem(difficultyEasyBox, mouseX, mouseY)) {
-                serviceLocator.getGame().difficulty = Difficulty.EASY;
+                game.difficulty = Difficulty.EASY;
             } else if (mouseOverItem(difficultyHardBox, mouseX, mouseY)) {
-                serviceLocator.getGame().difficulty = Difficulty.HARD;
+                game.difficulty = Difficulty.HARD;
             }
         }
     }
@@ -48,18 +50,18 @@ public class SettingsMenu extends Menu {
     public void render(Graphics g) {
         drawRectAndString(g, settingsTitle, Fonts.LARGE);
         drawRectAndString(g, volumeTitle, Fonts.MEDIUM);
-        if (serviceLocator.getAudioStream().isPlaying()) {
+        if (audioStream.isPlaying()) {
             drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, Color.black);
         } else drawRectAndStringWithColor(g, muteBox, Fonts.MEDIUM, new Color(109, 10, 6));
 
         drawVolumeUpAndDown(g, volumeDownBox, volumeUpBox);
 
-        volumeSliderBox.rect.x = (volumeSliderLineBox.rect.x - 1) + (((int) serviceLocator.getAudioStream().getCurrentVolume() + 80) * (volumeSliderLineBox.rect.width - 22) / 85);
+        volumeSliderBox.rect.x = (volumeSliderLineBox.rect.x - 1) + (((int) audioStream.getCurrentVolume() + 80) * (volumeSliderLineBox.rect.width - 22) / 85);
         g.fillRect(volumeSliderBox.rect.x, volumeSliderBox.rect.y, 22, 22);
 
         g.fillRect(centeredX - 75, volumeDownBox.rect.y + 15, 150, 2);
 
-        if (serviceLocator.getGame().difficulty == Difficulty.EASY) {
+        if (game.difficulty == Difficulty.EASY) {
             drawRectAndStringWithColor(g, difficultyEasyBox, Fonts.MEDIUM, new Color(1, 72, 12));
             drawRectAndStringWithColor(g, difficultyHardBox, Fonts.MEDIUM, Color.black);
         } else {
