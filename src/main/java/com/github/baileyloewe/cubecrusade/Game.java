@@ -61,18 +61,19 @@ public class Game extends Canvas implements Runnable {
         GameSignals.openSettings.connect(() -> this.gameState = GameState.SETTINGS);
         GameSignals.openShop.connect(() -> this.gameState = GameState.SHOP);
         GameSignals.playerDied.connect(() -> {
-            serviceLocator.getKeyInput().resetStates();
+            keyInput.resetStates();
             gameState = GameState.END;
         });
     }
 
-    public void onGameStarted() {
-        serviceLocator.getGameHandler().clearAll();
-        sleepThread(500);
-        Player player = Player.create(ID.Player, serviceLocator.getGameHandler(), new Vector2D(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32), serviceLocator.getKeyInput());
-        serviceLocator.setPlayer(player);
-        if (difficulty == Difficulty.EASY) serviceLocator.getSpawn().spawnEnemy(SLOW);
+    public void startGame() {
+        Player player = Player.create(ID.Player, gameHandler, new Vector2D(Game.WIDTH / 2.f - 32, Game.HEIGHT / 2.f - 32), keyInput);
+        spawn = new Spawn(this, gameHandler, player);
+        hud = new HUD(this, player);
+        menuManager.initGameMenus(player);
+        if (difficulty == Difficulty.EASY) spawn.spawnEnemy(SLOW);
         else HardEnemy.create(ID.HardEnemy, new Vector2D(1, 1));
+
         gameState = GameState.GAME;
         gameActive = true;
     }
@@ -85,7 +86,7 @@ public class Game extends Canvas implements Runnable {
      * Used to close audio streams before exiting the game
      */
     public void exitGame() {
-        serviceLocator.getAudioStream().closeAudioStream();
+        this.audioStream.closeAudioStream();
         System.exit(0);
     }
 
@@ -128,12 +129,12 @@ public class Game extends Canvas implements Runnable {
     private void tick() {
         switch (gameState) {
             case GAME -> {
-                serviceLocator.getHud().tick();
-                serviceLocator.getSpawn().tick();
-                serviceLocator.getGameHandler().tick();
+                hud.tick();
+                levelManager.tick();
+                gameHandler.tick();
             }
-            case MENU, SETTINGS, END -> serviceLocator.getGameHandler().tickMenuParticles();
-            case PAUSED, SHOP -> serviceLocator.getKeyInput().resetStates();
+            case MAINMENU, SETTINGS, END -> gameHandler.tickMenuParticles();
+            case PAUSED, SHOP -> keyInput.resetStates();
         }
     }
 
@@ -150,20 +151,20 @@ public class Game extends Canvas implements Runnable {
 
         switch (gameState) {
             case GAME -> {
-                serviceLocator.getStar().render(g);
-                serviceLocator.getGameHandler().render(g);
-                serviceLocator.getHud().render(g);
+                stars.render(g);
+                gameHandler.render(g);
+                hud.render(g);
             }
-            case MENU, END, SETTINGS, SHOP -> {
-                serviceLocator.getStar().render(g);
-                serviceLocator.getGameHandler().render(g);
-                serviceLocator.getMenuManager().render(g);
+            case MAINMENU, END, SETTINGS, SHOP -> {
+                stars.render(g);
+                gameHandler.render(g);
+                menuManager.render(g);
             }
             case PAUSED -> {
-                serviceLocator.getStar().render(g);
-                serviceLocator.getGameHandler().render(g);
-                serviceLocator.getHud().render(g);
-                serviceLocator.getMenuManager().render(g);
+                stars.render(g);
+                gameHandler.render(g);
+                hud.render(g);
+                menuManager.render(g);
             }
             default -> {
             }
