@@ -56,17 +56,17 @@ public class Game extends Canvas implements Runnable {
         MenuParticle.create(ID.MenuParticle, new Vector2D((float) Game.WIDTH / 2, (float) Game.HEIGHT / 2));
         new Window(WIDTH, HEIGHT, "Cube Crusade", this);
 
-        GameSignals.gameQuit.connect(() -> {
+        GameSignals.gameQuit.connect(this, () -> {
             gameState = GameState.MAINMENU;
             gameActive = false;
         });
-        GameSignals.gameExited.connect(this::exitGame);
-        GameSignals.gameStarted.connect(this::startGame);
-        GameSignals.openPauseMenu.connect(() -> gameState = GameState.PAUSED);
-        GameSignals.gameResumed.connect(() -> gameState = GameState.GAME);
-        GameSignals.openSettings.connect(() -> gameState = GameState.SETTINGS);
-        GameSignals.openShop.connect(() -> gameState = GameState.SHOP);
-        GameSignals.playerDied.connect(() -> {
+        GameSignals.gameExited.connect(this, this::exitGame);
+        GameSignals.gameStarted.connect(this, this::startGame);
+        GameSignals.openPauseMenu.connect(this, () -> gameState = GameState.PAUSED);
+        GameSignals.gameResumed.connect(this, () -> gameState = GameState.GAME);
+        GameSignals.openSettings.connect(this, () -> gameState = GameState.SETTINGS);
+        GameSignals.openShop.connect(this, () -> gameState = GameState.SHOP);
+        GameSignals.playerDied.connect(this, () -> {
             keyInput.resetStates();
             gameState = GameState.END;
         });

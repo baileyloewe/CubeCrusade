@@ -33,14 +33,14 @@ public class Player extends Entity {
     }
 
     public void connectSignals() {
-        healthComponent.died.connect(() -> GameSignals.playerDied.emit());
+        healthComponent.died.connect(this, () -> GameSignals.playerDied.emit());
 
-        upgradeComponent.baseHealthIncreased.connect(healthComponent::increaseMaxHealth);
-        upgradeComponent.healthRefilled.connect(healthComponent::fullHeal);
-        upgradeComponent.speedIncreased.connect((val) -> movementComponent.maxSpeed += val);
+        upgradeComponent.baseHealthIncreased.connect(this, healthComponent::increaseMaxHealth);
+        upgradeComponent.healthRefilled.connect(this, healthComponent::fullHeal);
+        upgradeComponent.speedIncreased.connect(this, (val) -> movementComponent.maxSpeed += val);
 
-        movementComponent.xAxisCollision.connect(() -> positionComponent.clamp(sizeComponent));
-        movementComponent.yAxisCollision.connect(() -> positionComponent.clamp(sizeComponent));
+        movementComponent.xAxisCollision.connect(this, () -> positionComponent.clamp(sizeComponent));
+        movementComponent.yAxisCollision.connect(this, () -> positionComponent.clamp(sizeComponent));
     }
 
     public void tick() {

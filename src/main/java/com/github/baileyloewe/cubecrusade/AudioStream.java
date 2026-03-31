@@ -32,10 +32,10 @@ public class AudioStream {
         audioFiles.put(AUDIONAME.Menu, "/Half-Mystery.wav");
         audioFiles.put(AUDIONAME.Game, "/Voxel Revolution.wav");
 
-        GameSignals.audioAdjusted.connect(this::adjustVolume);
-        GameSignals.gameQuit.connect(this::swapAudioStream);
-        GameSignals.gameStarted.connect(this::swapAudioStream);
-        GameSignals.muteToggled.connect(this::onToggleMute);
+        GameSignals.audioAdjusted.connect(this, this::adjustVolume);
+        GameSignals.gameQuit.connect(this, this::swapAudioStream);
+        GameSignals.gameStarted.connect(this, this::swapAudioStream);
+        GameSignals.muteToggled.connect(this, this::onToggleMute);
 
         try {
             audioStream = AudioSystem.getClip();

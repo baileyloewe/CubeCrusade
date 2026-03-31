@@ -16,8 +16,8 @@ public class SlowEnemy extends Entity {
 
     public SlowEnemy(ID id, PositionComponent positionComponent, SizeComponent sizeComponent, DisplayComponent displayComponent, MovementComponent movementComponent) {
         super(id, positionComponent, sizeComponent, displayComponent, movementComponent);
-        movementComponent.xAxisCollision.connect(movementComponent::bounceX);
-        movementComponent.yAxisCollision.connect(movementComponent::bounceY);
+        movementComponent.xAxisCollision.connect(this, movementComponent::bounceX);
+        movementComponent.yAxisCollision.connect(this, movementComponent::bounceY);
     }
 
     public static SlowEnemy create(ID id, Vector2D position) {

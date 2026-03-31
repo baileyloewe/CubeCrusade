@@ -25,7 +25,7 @@ public class Spawn {
         this.gameHandler = gameHandler;
         this.player = player;
         this.setSpawnMap();
-        GameSignals.levelChanged.connect(() -> {
+        GameSignals.levelChanged.connect(this, () -> {
                     EnemyType enemy = spawnMap.get(game.level);
                     if (enemy != null) spawnEnemy(enemy);
                 }

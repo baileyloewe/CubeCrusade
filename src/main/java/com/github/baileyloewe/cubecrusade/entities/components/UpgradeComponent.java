@@ -16,9 +16,17 @@ public class UpgradeComponent {
 
     public UpgradeComponent(Player player) {
         this.player = player;
-        GameSignals.healthUpgradePurchased.connect(this::buyHealthUpgrade);
-        GameSignals.speedUpgradePurchased.connect(this::buySpeedUpgrade);
-        GameSignals.healthRefillPurchased.connect(this::buyHealthRefill);
+        GameSignals.healthUpgradePurchased.connect(this, this::buyHealthUpgrade);
+        GameSignals.speedUpgradePurchased.connect(this, this::buySpeedUpgrade);
+        GameSignals.healthRefillPurchased.connect(this, this::buyHealthRefill);
+        GameSignals.gameQuit.connect(this, this::disconnectSignals);
+    }
+
+    public void disconnectSignals() {
+        GameSignals.healthUpgradePurchased.disconnect(this);
+        GameSignals.speedUpgradePurchased.disconnect(this);
+        GameSignals.healthRefillPurchased.disconnect(this);
+        GameSignals.gameQuit.disconnect(this);
     }
 
     public int getCostOfNextHealthUpgrade() {

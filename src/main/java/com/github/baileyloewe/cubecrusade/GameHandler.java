@@ -13,11 +13,10 @@ public class GameHandler {
     private final CopyOnWriteArraySet<Entity> entities = new CopyOnWriteArraySet<>();
 
     public GameHandler() {
-        GameSignals.gameStarted.connect(this::clearAll);
-        GameSignals.gameQuit.connect(this::clearAll);
-        GameSignals.entityAdded.connect(this::addEntity);
-        GameSignals.entityRemoved.connect(this::removeEntity);
-        GameSignals.clearEnemies.connect(this::clearEnemies);
+        GameSignals.gameQuit.connect(this, this::clearAll);
+        GameSignals.entityAdded.connect(this, this::addEntity);
+        GameSignals.entityRemoved.connect(this, this::removeEntity);
+        GameSignals.clearEnemies.connect(this, this::clearEnemies);
     }
 
     public void tick() {
