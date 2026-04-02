@@ -88,6 +88,7 @@ public final class GraphicsUtil extends MouseAdapter {
      * @param g           graphics object to draw with
      * @param MenuBoxItem the MenuBoxItem to be drawn
      * @param font        the font the string is drawn with
+     * @param color       the color of the drawing
      */
     public static void drawRectAndStringWithColor(Graphics g, MenuBoxItem MenuBoxItem, Fonts font, Color color) {
         fillRect(g, MenuBoxItem, color);

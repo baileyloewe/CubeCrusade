@@ -1,7 +1,7 @@
 package com.github.baileyloewe.cubecrusade.entities.components;
 
 import com.github.baileyloewe.cubecrusade.Game;
-import com.github.baileyloewe.cubecrusade.Sprite;
+import com.github.baileyloewe.cubecrusade.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,8 +16,8 @@ public class DisplayComponent {
     public DisplayComponent(PositionComponent positionComponent, SizeComponent sizeComponent, int spriteXPos, int spriteYPos) {
         this.sizeComponent = sizeComponent;
         this.positionComponent = positionComponent;
-        Sprite sprite = new Sprite(Game.spriteSheet);
-        image = sprite.grabSprite(spriteXPos, spriteYPos, sizeComponent.width, sizeComponent.height);
+        SpriteSheet spriteSheet = new SpriteSheet(Game.spriteSheet);
+        image = spriteSheet.grabSprite(spriteXPos, spriteYPos, sizeComponent.width, sizeComponent.height);
         useSprite = true;
     }
 
